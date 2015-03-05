@@ -1,0 +1,1 @@
+<g:link controller="staff" action="manageStaff">Staff Management</g:link>
