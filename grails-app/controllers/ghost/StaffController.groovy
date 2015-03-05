@@ -1,7 +1,7 @@
 package ghost
 
 class StaffController {
-	//git test
+
 	def staffService //by using naming convention, it becomes a StaffService object
 	
 	def manageStaff() {
