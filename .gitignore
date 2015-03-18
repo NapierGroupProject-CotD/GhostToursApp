@@ -20,3 +20,5 @@ stacktrace.log
 .project
 /test/reports
 *.war
+GhostToursApp/grails-app/views/staff/view.gsp
+GhostToursApp/grails-app/views/staff/view.gsp
