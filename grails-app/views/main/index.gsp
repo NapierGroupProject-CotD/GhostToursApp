@@ -1,7 +1,4 @@
 
-
-<%@ page import="ghost.Role"%>
-
 <!DOCTYPE html>
 <html>
 <head>
