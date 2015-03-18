@@ -2,7 +2,7 @@ package ghost
 
 class Tour {
 	
-	int staffId
+	int guideId
 	int typeId
 	Date datetime
 	
@@ -16,7 +16,7 @@ class Tour {
 		version false
 		
 		id column:"tour_id"
-		staffId column:"staff_id"
+		guideId column:"guide_id"
 		typeId column:"type_id"
 		datetime column:"datetime"
 	}
