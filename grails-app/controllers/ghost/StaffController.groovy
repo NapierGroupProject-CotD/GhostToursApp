@@ -96,6 +96,7 @@ class StaffController {
 	
 	def bookerDashboard(){
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
+
 		def date = new Date() //this gets current date and time
 		
 		def futureToursList = Tour.findAllByDatetimeGreaterThan(date)  //only future tours need to be displayed
@@ -103,6 +104,7 @@ class StaffController {
 		def mapOfRemainingTourPlaces = bookingService.getMapOfRemainingTourPlaces()
 		
 		[staffName:loggedInStaff.name, mapOfPlaces:mapOfRemainingTourPlaces, futureToursList:futureToursList]
+
 	}
 	
 	def manageStaff() {

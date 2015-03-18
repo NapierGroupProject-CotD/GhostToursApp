@@ -14,7 +14,9 @@
 	<g:form id="chooseTourForm" controller="booking" action="newBookingDetails">
 		<fieldset>
 			<legend>Choose the the tour for booking</legend>
+
 			<g:each in="${futureToursList}" var="tour" status="i">
+
 				<g:radio name="chosenTour" value="${tour.id}"/><label>${tour.datetime} - ${TourType.get(tour.typeId).typeName} - ${mapOfPlaces.get(tour)} places left!</label><br/>
 			</g:each>
 		</fieldset>

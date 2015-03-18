@@ -18,6 +18,7 @@ class BookingService {
 		
 		def remainingTourPlaces
 		futureToursList.each{ tour ->
+
 			remainingTourPlaces = TourType.get(tour.typeId).spaces
 			
 			Booking.findAllByTourId(tour.id).each{ booking ->
@@ -30,7 +31,9 @@ class BookingService {
 		return mapOfRemainingTourPlaces
 	}// end getMapOf...()
 	
+
 	// this method returns the remaining places for a single tour
+
 	def getRemainingTourPlaces(tourId){
 		def remainingTourPlaces = TourType.get(Tour.get(tourId).typeId).spaces
 		Booking.findAllByTourId(tourId).each{ booking ->
