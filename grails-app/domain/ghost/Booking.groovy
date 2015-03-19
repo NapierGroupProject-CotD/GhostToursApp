@@ -2,20 +2,16 @@ package ghost
 
 class Booking {
 	
-	int tourId
 	String custName
 	int numberPeople
-	int staffId
+	Tour tour
+	Staff staff
+	
+	static belongsTo=[tour:Tour]
 	
     static constraints = {
     }
-	
-	static mapping ={
-		table "booking"
+	static mapping={
 		version false
-		
-		id column:"booking_id"
-		custName column:"cust_name"
-		numberPeople column:"number_people"
 	}
 }

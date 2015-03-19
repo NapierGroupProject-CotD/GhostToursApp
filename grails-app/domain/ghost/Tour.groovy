@@ -2,22 +2,26 @@ package ghost
 
 class Tour {
 	
-	int staffId
-	int typeId
 	Date datetime
+	TourType tourType
+	Staff staff
 	
 	static hasMany = [bookings : Booking]
+	static belongsTo = [tourType:TourType]
 	
     static constraints = {
+		staff nullable:true
     }
-	
 	static mapping={
-		table "tour"
 		version false
+	}
+	
+	public int getRemainingPlaces(){
+		def places = this.tourType.spaces
+		bookings.each{ booking ->
+			places -= booking.numberPeople
+		}
+		return places
 		
-		id column:"tour_id"
-		staffId column:"staff_id"
-		typeId column:"type_id"
-		datetime column:"datetime"
 	}
 }

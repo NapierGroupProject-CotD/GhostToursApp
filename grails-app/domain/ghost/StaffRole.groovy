@@ -1,18 +1,33 @@
 package ghost
 
 class StaffRole {
-	int staffId
-	int roleId
+	Staff staff
+	Role role
+	
+	static belongsTo=[staff:Staff, role:Role]
+	static StaffRole link(Staff staff, Role role){
+		def sr = StaffRole.findByStaffAndRole(staff, role)
+		if(!sr){
+			sr = new StaffRole()
+			staff?.addToStaffRoles(sr)
+			role?.addToStaffRoles(sr)
+			sr.save()
+		}
+		return sr
+	}
+	
+	static void unlink(staff, role) {
+		def sr = StaffRole.findByStaffAndRole(staff, role)
+		if (sr){
+			staff?.removeFromStaffRoles(sr)
+			role?.removeFromStaffRoles(sr)
+			sr.delete()
+		}
+	}
 	
     static constraints = {
     }
-	
 	static mapping={
-		table "staff_role"
 		version false
-		
-		id column:"staff_role_id"
-		staffId column:"staff_id"
-		roleId column:"role_id"
 	}
 }

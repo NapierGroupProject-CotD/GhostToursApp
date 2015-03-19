@@ -12,7 +12,7 @@
 		<fieldset>
 			<legend>Choose the view you want to see</legend>
 			<g:each in="${listOfRoles}" var="role">
-				<g:radio name="role" value="${role}"/><label>${role}</label>
+				<g:radio name="role" value="${role.id}"/><label>${role.name}</label>
 			</g:each>
 
 		</fieldset>

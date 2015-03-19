@@ -29,19 +29,19 @@ class StaffController {
 					//if login is correct, we put the Staff object in session so we can use it anywhere we want (controllers, gsps)
 					session.setAttribute("loggedInStaff", loggedInStaff) 
 			
-					ArrayList<String> listOfRoles = staffService.listOfRoles(loggedInStaff)
+					ArrayList<Role> listOfRoles = loggedInStaff.roles()
 			
 					if(listOfRoles.size > 1){      // I thought that if a member has more than one role, we could have a page where he would select which view to access
 						[listOfRoles:listOfRoles]  // the list of roles is passed to chooseView.gsp. reminder: the naming convention - if a view is not explicitly chosen, the method will look for one with the same name
 				
 					} else {
-						if(listOfRoles[0].equals("Manager")){        // if the staff member has only one role, the appropriate method is called by the redirect to render the next view. 
+						if(listOfRoles[0].name.equals("Manager")){        // if the staff member has only one role, the appropriate method is called by the redirect to render the next view. 
 							redirect(action:"managerDashboard")       
 						} else {
-							if(listOfRoles[0].equals("Guide")){
+							if(listOfRoles[0].name.equals("Guide")){
 								redirect(action:"guideDashboard")
 							} else {
-								if(listOfRoles[0].equals("Booker")){
+								if(listOfRoles[0].name.equals("Booker")){
 									redirect(action:"bookerDashboard")
 								}
 							}
@@ -61,14 +61,15 @@ class StaffController {
 		
 		} else {
 			loggedInStaff = session.getAttribute("loggedInStaff")
-			ArrayList<String> listOfRoles = staffService.listOfRoles(loggedInStaff)
+			ArrayList<String> listOfRoles = loggedInStaff.roles()
 			[listOfRoles:listOfRoles]
 		}
 			
 	}// end chooseView
 	
 	def changeView(){
-		def chosenRole = params.role
+		def roleId = params.role
+		def chosenRole = Role.get(roleId.toInteger()).name
 		
 		if(chosenRole.equals("Manager")){    
 			redirect(action:"managerDashboard")       
@@ -101,15 +102,14 @@ class StaffController {
 		
 		def futureToursList = Tour.findAllByDatetimeGreaterThan(date)  //only future tours need to be displayed
 		
-		def mapOfRemainingTourPlaces = bookingService.getMapOfRemainingTourPlaces()
 		
-		[staffName:loggedInStaff.name, mapOfPlaces:mapOfRemainingTourPlaces, futureToursList:futureToursList]
+		[staffName:loggedInStaff.name, futureToursList:futureToursList]
 
 	}
 	
 	def manageStaff() {
 		def staffList = Staff.list()                  // Domain.list() is equivalent to SELECT * FROM table
-		def mapOfRoles = staffService.listAllRoles()  //service method call
+		def mapOfRoles = staffService.mapOfRoles()  //service method call
 		
 		[staffList:staffList, mapOfRoles:mapOfRoles]  // these are passed to manageStaff.gsp
 	}
@@ -121,9 +121,30 @@ class StaffController {
 		newStaff.email = params.email
 		newStaff.username = params.username
 		newStaff.password = hashingService.createHash(params.password)
-		newStaff.save(flush:true, failOnError:true)	
 		
-		redirect(action:"managerDashboard")
+		newStaff.save(flush:true, failOnError:true)
+		
+		def role = params.role
+		if(role instanceof String){
+			StaffRole.link(newStaff, Role.get(role.toInteger()))
+		} else {
+			role.each{ tempRole->
+				StaffRole.link(newStaff, Role.get(tempRole.toInteger()))
+			}
+		}
+		
+		
+		
+		redirect(action:"manageStaff")
+	}
+	
+	def deleteStaff(){
+		def staff= Staff.get(params.staffId.toInteger())
+		
+		
+		staff.delete(flush:true, failOnError:true)
+		
+		redirect(action:"manageStaff")
 	}
 	
 }

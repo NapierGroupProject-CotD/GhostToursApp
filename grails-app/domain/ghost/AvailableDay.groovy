@@ -2,18 +2,16 @@ package ghost
 
 class AvailableDay {
 	
-	int guideId
-	int dayId
+	String day
+	Staff staff
+	
+	static belongsTo=[staff:Staff]
 	
     static constraints = {
     }
 	
-	static mapping ={
-		table "available_day"
+	static mapping={
 		version false
-		
-		id column:"available_id"
-		guideId column:"guide_id"
-		dayId column:"day_id"
 	}
+	
 }
