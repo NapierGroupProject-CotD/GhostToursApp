@@ -16,7 +16,7 @@
 			<legend>Enter Booking Details</legend>
 			<input type="text" name="custName" required placeholder="Customer Name"/>
 			<input type="number" name="numberPeople" min="1" max="${remainingTourPlaces}"required placeholder="Number Of People"/> <label>${remainingTourPlaces} remaining! </label>
-			<g:hiddenField name="tourId" value="${tourId}"/>
+			<g:hiddenField name="tourId" value="${tour.id}"/>
 		</fieldset>
 		<input type="submit" value="Book"/>
 	</g:form>

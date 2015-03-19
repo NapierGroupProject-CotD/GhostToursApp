@@ -18,7 +18,7 @@
 	<tr>
 	<g:each in="${staffList}" var="staffMember">
 			<tr> 
-				<td>${staffMember.name}</td><td>${staffMember.phone}</td><td>${staffMember.email}</td><td>${mapOfRoles.get(staffMember)}</td>
+				<td>${staffMember.name}</td><td>${staffMember.phone}</td><td>${staffMember.email}</td><td>${mapOfRoles.get(staffMember).name}</td>
 				<td><g:form action="viewStaff">
 						<g:hiddenField name="staffId" value="${staffMember.id}"/>
 						<input type="submit" value="View Details">
@@ -26,7 +26,7 @@
 					
 					<g:form action="deleteStaff">
 						<g:hiddenField name="staffId" value="${staffMember.id}"/>
-						<input type="submit" value="Delete">
+						<input type="submit" value="Delete" onclick="return confirm('Permanently delete staff member details?')">
 					</g:form>
 				
 				</td>

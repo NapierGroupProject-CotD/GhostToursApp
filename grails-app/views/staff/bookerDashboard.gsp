@@ -17,7 +17,7 @@
 
 			<g:each in="${futureToursList}" var="tour" status="i">
 
-				<g:radio name="chosenTour" value="${tour.id}"/><label>${tour.datetime} - ${TourType.get(tour.typeId).typeName} - ${mapOfPlaces.get(tour)} places left!</label><br/>
+				<g:radio name="chosenTour" value="${tour.id}"/><label>${tour.datetime} - ${tour.tourType.typeName} - ${tour.getRemainingPlaces()} places left!</label><br/>
 			</g:each>
 		</fieldset>
 		<input type="submit" value="Next"/>

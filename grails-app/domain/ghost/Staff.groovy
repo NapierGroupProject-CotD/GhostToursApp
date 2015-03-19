@@ -8,22 +8,19 @@ class Staff {
 	String password
 
 	static hasMany =[availableDays : AvailableDay, 
-				  datesUnavailable : DateUnavailable, 
-					     prefTours : PrefTour, 
-					         tours : Tour]
+				    datesUnavailable : DateUnavailable, 
+					           tours : Tour,
+							   staffRoles : StaffRole,
+							   prefTours:PrefTour]
     static constraints = {
 		
     }
 	
-	static mapping ={
-		table "staff"
-		version false
-		
-		id column:"staff_id"
-		name column:"name"
-		phone column:"phone"
-		email column:"email"
-		username column:"username"
-		password column:"password"
+	def roles() {
+		return staffRoles.collect{it.role}
 	}
+	static mapping={
+		version false
+	}
+	
 }
