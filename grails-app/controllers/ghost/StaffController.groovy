@@ -8,7 +8,7 @@ class StaffController {
 	
 	def login(){}
 	
-	def logout(){
+	def logoutStaff(){
 		println "omg"
 		
 		println "wtf"

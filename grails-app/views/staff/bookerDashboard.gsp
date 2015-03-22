@@ -7,7 +7,7 @@
 </head>
 <body>
 <nav>
-	<g:link controller="staff" action="logout">Log Out</g:link>
+	<g:link action="logout">Log out</g:link>
 </nav>
 
 <div id="upcommingToursBox">
@@ -37,6 +37,6 @@
 </g:else>
 
 <g:link controller="booking" action="nextDay">Next Day</g:link>
-
+<g:link action="logoutStaff">Log out</g:link>
 </body>
 </html>
