@@ -8,6 +8,7 @@
 <body>
 <nav>
 	<g:link controller="staff" action="logout">Log Out</g:link>
+	<g:link controller="staff" action="bookerDashboard">Back to Dashboard</g:link>
 </nav>
 
 <div id="bookingDetailsBox">
@@ -22,5 +23,17 @@
 	</g:form>
 </div>
 
+<div id="otherBookingsBox">
+	<table>
+		<tr>
+			<th>Customer Name</th><th>No. people</th><th>Booked by</th><th>Actions</th>
+		</tr>
+		<g:each in="${tourBookings}" var="booking">
+			<tr>
+				<td>${booking.custName}</td><td>${booking.numberPeople}</td><td>${booking.staff.name}</td><td>........</td>
+			</tr>
+		</g:each>
+	</table>
+</div>
 </body>
 </html>

@@ -9,8 +9,11 @@ class StaffController {
 	def login(){}
 	
 	def logout(){
-		session.setAttribute("loggedInStaff", null)
-		redirect(controller:"main", action:"index")
+		println "omg"
+		
+		println "wtf"
+		
+		//redirect(controller:"main", action:"index")
 	}
 	
 	def chooseView(){
@@ -97,11 +100,24 @@ class StaffController {
 	
 	def bookerDashboard(){
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
-
-		def date = new Date() //this gets current date and time
+		def selectedDate
+		if(session.getAttribute("selectedDate") == null){
+			selectedDate = Calendar.instance
+			session.setAttribute("selectedDate", selectedDate)
+		} else {
+			selectedDate = session.getAttribute("selectedDate").clone()
+		}
 		
-		def futureToursList = Tour.findAllByDatetimeGreaterThan(date)  //only future tours need to be displayed
+		Calendar start = selectedDate.clone() //this gets current date and time
 		
+		Calendar end = selectedDate.clone()
+		end.set(start.get(Calendar.YEAR), start.get(Calendar.MONTH), start.get(Calendar.DATE)+1, 0, 0)
+		
+		//println "xxxxx"+start.format("yyyy-MM-dd HH:mm:ss")
+		//println "xxxxx"+end.format("yyyy-MM-dd HH:mm:ss")
+		
+		def futureToursList = Tour.findAllByDatetimeBetween(start.getTime(), end.getTime())
+		session.setAttribute("today", true)
 		
 		[staffName:loggedInStaff.name, futureToursList:futureToursList]
 
