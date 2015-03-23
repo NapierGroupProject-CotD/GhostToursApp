@@ -19,7 +19,7 @@
 		<asset:javascript src="application.js"/>
 		<g:layoutHead/>
 	</head>
-	<nav class="navbar navbar-default navbar-fixed-top">
+	<nav class="navbar navbar-default">
 		<div  class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collpase">
@@ -42,8 +42,9 @@
 	
 		<%-- <div id="cotdLogo" role="banner"><a href="http://www.cityofthedeadtours.com/"><asset:image src="timthumb.png" alt="City of the Dead"/></a></div>--%>
 		
-		
+		<div class="container">
 		<g:layoutBody/>
+		</div>
 		<div class="footer" role="contentinfo"></div>
 		<div id="spinner" class="spinner" style="display:none;"><g:message code="spinner.alt" default="Loading&hellip;"/></div>
 	</body>

@@ -7,7 +7,7 @@
 	<asset:stylesheet src="structure.css"/>
 </head>
 <body>
-<div class="container">
+
 <div id="staffMemberBox" class="panel panel-primary">
 <h4>List of all members</h4>
 <table class="table table-striped table condensed">
@@ -61,6 +61,6 @@
 <g:form controller="tour" action="generateTours">
 	<input type="submit" value="Generate Tours"/>
 </g:form>
-</div> <%--end of container --%>
+
 </body>
 </html>
