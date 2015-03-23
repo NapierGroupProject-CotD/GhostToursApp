@@ -37,6 +37,6 @@
 </g:else>
 
 <g:link controller="booking" action="nextDay">Next Day</g:link>
-<g:link action="logoutStaff">Log out</g:link>
+
 </body>
 </html>

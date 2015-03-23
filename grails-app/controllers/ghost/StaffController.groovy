@@ -8,12 +8,10 @@ class StaffController {
 	
 	def login(){}
 	
-	def logoutStaff(){
-		println "omg"
+	def logout(){
+		session.invalidate()
 		
-		println "wtf"
-		
-		//redirect(controller:"main", action:"index")
+		redirect(controller:"main", action:"index")
 	}
 	
 	def chooseView(){
@@ -95,7 +93,45 @@ class StaffController {
 	
 	def guideDashboard(){
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
-		[staffName:loggedInStaff.name]
+		def startOfMonth = Calendar.instance
+		startOfMonth.set(Calendar.DATE, 1)
+		startOfMonth.clearTime()
+		
+		def endOfMonth = Calendar.instance
+		endOfMonth.add(Calendar.MONTH, 1)
+		endOfMonth.set(Calendar.DATE, 1)
+		endOfMonth.clearTime()
+		
+		//println startOfMonth.format("dd-MMM-yy")
+		//println endOfMonth.format("dd-MMM-yy")
+		
+		ArrayList<Calendar> dateList = new ArrayList<Calendar>()
+		ArrayList<Tour> tourList = new ArrayList<Tour>()
+		def tours = Tour.findAllByDatetimeBetween(startOfMonth.getTime(), endOfMonth.getTime())
+		HashMap<Date, ArrayList<Tour>> tourMap = new HashMap<Date, ArrayList<Tour>>()
+		Calendar tourCal
+		
+		startOfMonth.upto(endOfMonth) {
+			
+			tours.each{ tour->
+				tourCal = Calendar.getInstance()
+				tourCal.setTime(tour.datetime)
+				//println it.format("dd-MM-yy")
+				if(tourCal.clearTime()==it.clearTime()){
+					tourList.add(tour)
+				}
+			}
+			//println it.format("dd-MM-yy")
+			//println tourList
+			tourMap.put(it.clone(), tourList.clone())
+			//println tourMap.get(it.getTime())
+			tourList.clear()
+			dateList.add(it.clone())
+		}
+		
+		println tourMap.get(dateList[5])
+		
+		[loggedInStaff:loggedInStaff, dateList:dateList, tourMap:tourMap, tours:tours]
 	}
 	
 	def bookerDashboard(){

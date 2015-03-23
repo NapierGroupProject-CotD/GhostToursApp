@@ -30,7 +30,13 @@
 		</tr>
 		<g:each in="${tourBookings}" var="booking">
 			<tr>
-				<td>${booking.custName}</td><td>${booking.numberPeople}</td><td>${booking.staff.name}</td><td>........</td>
+				<td>${booking.custName}</td><td>${booking.numberPeople}</td><td>${booking.staff.name}</td>
+				<td><g:form action="cancelBooking">
+						<g:hiddenField name="bookingId" value="${booking.id}"/>
+						<g:hiddenField name="chosenTour" value="${tour.id}"/>
+						<input type="submit" value="Cancel" onclick="return confirm('Delete booking?')"/>
+					</g:form>
+				</td>
 			</tr>
 		</g:each>
 	</table>

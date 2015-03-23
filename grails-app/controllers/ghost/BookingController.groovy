@@ -33,6 +33,13 @@ class BookingController {
 		redirect(controller:"staff", action:"bookerDashboard")
 	}
 	
+	def cancelBooking(){
+		def booking = Booking.get(params.bookingId.toInteger())
+		booking.delete(flush:true, failOnError:true)
+		
+		redirect(action:"newBookingDetails", params:[chosenTour:params.chosenTour])
+	}
+	
 	def nextDay(){
 		Calendar selectedDate = session.getAttribute("selectedDate")
 		selectedDate.add(Calendar.DATE, 1)
