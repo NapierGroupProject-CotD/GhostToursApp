@@ -22,12 +22,19 @@
 	<nav class="navbar navbar-default navbar-fixed-top">
 		<div  class="container">
 			<div class="navbar-header">
-				<ul class="nav navbar-nav">
-				<li class="active"><g:link controller="staff" action="bookerDashboard">Bookings</g:link></li>
-				<li class="active"><g:link controller="staff" action="guideDashboard">Guide</g:link></li>
-				<li class="active"><g:link controller="staff" action="managerDashboard">Manager</g:link></li>
-				<li class="active"><g:link controller="staff" action="logout">Logout</g:link></li>
-				</ul>
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collpase">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><g:link controller="staff" action="bookerDashboard">Bookings</g:link></li>
+						<li class="active"><g:link controller="staff" action="guideDashboard">Guide</g:link></li>
+						<li class="active"><g:link controller="staff" action="managerDashboard">Manager</g:link></li>
+						<li class="active"><g:link controller="staff" action="logout">Logout</g:link></li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</nav>
