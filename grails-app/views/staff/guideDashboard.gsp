@@ -2,6 +2,7 @@
 <html>
 <head>
 <asset:stylesheet src="structure.css"/>
+<meta name="layout" content="ghostview"/>
 </head>
 <body>
 <nav>

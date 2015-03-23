@@ -1,3 +1,6 @@
+<head>
+	<meta name="layout" content="ghostview"/>
+</head>
 
 <h4>Welcome, ${staffName}!</h4>
 

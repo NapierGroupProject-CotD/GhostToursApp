@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="layout" content="ghostview"/>
 </head>
 <body>
 <nav>
-	<g:link controller="staff" action="logout">Log Out</g:link>
+	<ul class="nav nav-pills">
+		<li role="presentation"><g:link controller="staff" action="logout">Log Out</g:link></li>
+	</ul>
 </nav>
 
-<div id="chooseViewBox">
+<div id="chooseViewBox"  class="container">
 	<g:form id="chooseViewForm" action="changeView">
 		<fieldset>
 			<legend>Choose the view you want to see</legend>
