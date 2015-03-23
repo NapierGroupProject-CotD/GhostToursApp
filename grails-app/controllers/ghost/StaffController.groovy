@@ -9,7 +9,8 @@ class StaffController {
 	def login(){}
 	
 	def logout(){
-		session.setAttribute("loggedInStaff", null)
+		session.invalidate()
+		
 		redirect(controller:"main", action:"index")
 	}
 	
@@ -92,16 +93,67 @@ class StaffController {
 	
 	def guideDashboard(){
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
-		[staffName:loggedInStaff.name]
+		def startOfMonth = Calendar.instance
+		startOfMonth.set(Calendar.DATE, 1)
+		startOfMonth.clearTime()
+		
+		def endOfMonth = Calendar.instance
+		endOfMonth.add(Calendar.MONTH, 1)
+		endOfMonth.set(Calendar.DATE, 1)
+		endOfMonth.clearTime()
+		
+		//println startOfMonth.format("dd-MMM-yy")
+		//println endOfMonth.format("dd-MMM-yy")
+		
+		ArrayList<Calendar> dateList = new ArrayList<Calendar>()
+		ArrayList<Tour> tourList = new ArrayList<Tour>()
+		def tours = Tour.findAllByDatetimeBetween(startOfMonth.getTime(), endOfMonth.getTime())
+		HashMap<Date, ArrayList<Tour>> tourMap = new HashMap<Date, ArrayList<Tour>>()
+		Calendar tourCal
+		
+		startOfMonth.upto(endOfMonth) {
+			
+			tours.each{ tour->
+				tourCal = Calendar.getInstance()
+				tourCal.setTime(tour.datetime)
+				//println it.format("dd-MM-yy")
+				if(tourCal.clearTime()==it.clearTime()){
+					tourList.add(tour)
+				}
+			}
+			//println it.format("dd-MM-yy")
+			//println tourList
+			tourMap.put(it.clone(), tourList.clone())
+			//println tourMap.get(it.getTime())
+			tourList.clear()
+			dateList.add(it.clone())
+		}
+		
+		println tourMap.get(dateList[5])
+		
+		[loggedInStaff:loggedInStaff, dateList:dateList, tourMap:tourMap, tours:tours]
 	}
 	
 	def bookerDashboard(){
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
-
-		def date = new Date() //this gets current date and time
+		def selectedDate
+		if(session.getAttribute("selectedDate") == null){
+			selectedDate = Calendar.instance
+			session.setAttribute("selectedDate", selectedDate)
+		} else {
+			selectedDate = session.getAttribute("selectedDate").clone()
+		}
 		
-		def futureToursList = Tour.findAllByDatetimeGreaterThan(date)  //only future tours need to be displayed
+		Calendar start = selectedDate.clone() //this gets current date and time
 		
+		Calendar end = selectedDate.clone()
+		end.set(start.get(Calendar.YEAR), start.get(Calendar.MONTH), start.get(Calendar.DATE)+1, 0, 0)
+		
+		//println "xxxxx"+start.format("yyyy-MM-dd HH:mm:ss")
+		//println "xxxxx"+end.format("yyyy-MM-dd HH:mm:ss")
+		
+		def futureToursList = Tour.findAllByDatetimeBetween(start.getTime(), end.getTime())
+		session.setAttribute("today", true)
 		
 		[staffName:loggedInStaff.name, futureToursList:futureToursList]
 
