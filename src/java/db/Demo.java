@@ -30,7 +30,7 @@ public class Demo {
 			e.printStackTrace();
 		}
 		
-		WeekRota week = new WeekRota(LocalDate.of(2016, Month.APRIL, 18));
+		WeekRota week = new WeekRota(LocalDate.of(2015, Month.MARCH, 2));
 		
 	//	System.out.println(week.toString());
 		

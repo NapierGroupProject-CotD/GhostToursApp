@@ -26,10 +26,10 @@ public class dbConnect {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");		/* Load the MySQL driver. One per DB instance. */
 			connection = DriverManager.getConnection( 	/* Setup the connection with the DB */
-					"jdbc:mysql://localhost/ghost?" + "user=admin&password=admin"
+					"jdbc:mysql://localhost/ghost2?" + "user=admin&password=admin"
 			);
 		      statement = connection.createStatement();
-		      resultSet = statement.executeQuery( "select * from ghost.staff" );
+		      resultSet = statement.executeQuery( "select * from ghost2.staff" );
 		//      writeMetaData(resultSet);
 		      getGuides(resultSet);
 
@@ -41,7 +41,7 @@ public class dbConnect {
 		
 		try {
 		      statement = connection.createStatement();
-		      resultSet = statement.executeQuery( "select * from ghost.tour" );
+		      resultSet = statement.executeQuery( "select * from ghost2.tour" );
 		//      writeMetaData(resultSet);
 		      getTours(resultSet);
 		      
@@ -57,7 +57,7 @@ public class dbConnect {
 		while (resultSet2.next()) {
 			LocalDate date = resultSet.getDate("datetime").toLocalDate();
 			LocalTime time = resultSet.getTime("datetime").toLocalTime();
-			String type = typeQuery(resultSet.getInt("type_id"));
+			String type = typeQuery(resultSet.getInt("tour_type_id"));
 			Tour tour = new Tour(date, time, type);
 			tours.add(tour);
 		}
@@ -69,7 +69,7 @@ public class dbConnect {
 		ResultSet newResultSet;
 		try {
 			Statement newStatement = connection.createStatement();
-			newResultSet = newStatement.executeQuery( "select type_name from ghost.tour_type where type_id = " + type_id );
+			newResultSet = newStatement.executeQuery( "select type_name from ghost2.tour_type where type_id = " + type_id );
 			while (newResultSet.next()){
 				type = newResultSet.getString("type_name");
 			}
@@ -90,7 +90,7 @@ public class dbConnect {
 	private void getGuides(ResultSet resultSet) throws SQLException {
 		Guides guides = new Guides();
 		while (resultSet.next()) {
-			Guide guide = new Guide(resultSet.getString("name"), getAvailability(resultSet.getInt("staff_id")));
+			Guide guide = new Guide(resultSet.getString("name"), getAvailability(resultSet.getInt("id")));
 			guides.add(guide);
 		}
 		System.out.println(guides.toString());
@@ -100,7 +100,7 @@ public class dbConnect {
 		ArrayList<DayOfWeek> availability = new ArrayList<DayOfWeek>();
 		try {
 			statement = connection.createStatement();
-			resultSet = statement.executeQuery( "select * from ghost.available_day where staff_id = " + staff_id );
+			resultSet = statement.executeQuery( "select * from ghost2.available_day where staff_id = " + staff_id );
 		
 			while (resultSet.next()) {	
 				availability.add( DayOfWeek.valueOf(resultSet.getString("day")) );
