@@ -17,6 +17,9 @@
 		<asset:stylesheet src="bootstrap-theme.css"/>
 		<asset:stylesheet src="bootstrap.min.css"/>
 		<asset:javascript src="application.js"/>
+		<asset:javascript src="bootstrap.js"/>
+		<asset:javascript src="bootstrap.min.js"/>
+		<asset:javascript src="npm.js"/>
 		<g:layoutHead/>
 	</head>
 
@@ -24,9 +27,9 @@
 		<div  class="container">
 			<div class="navbar-header">
 				<ul class="nav nav-tabs" role="tablist">
-				<li role="presentation" class="active"><g:link controller="staff" action="bookerDashboard" data-toggle="tab">Bookings</g:link></li>
-				<li role="presentation" data-toggle="tab"><g:link controller="staff" action="guideDashboard" data-toggle="tab">Guide</g:link></li>
-				<li role="presentation" data-toggle="tab"><g:link controller="staff" action="managerDashboard" data-toggle="tab">Manager</g:link></li>
+				<li role="presentation"><g:link controller="staff" action="bookerDashboard">Bookings</g:link></li>
+				<li role="presentation"><g:link controller="staff" action="guideDashboard">Guide</g:link></li>
+				<li role="presentation"><g:link controller="staff" action="managerDashboard">Manager</g:link></li>
 				<li role="presentation"><g:link controller="staff" action="logout">Logout</g:link></li>
 				</ul>
 			</div>
@@ -42,4 +45,10 @@
 		<div class="footer" role="contentinfo"></div>
 		<div id="spinner" class="spinner" style="display:none;"><g:message code="spinner.alt" default="Loading&hellip;"/></div>
 	</body>
+	<script>
+		$(".nav nav-tabs li).on("click", function() {
+			$(".nav nav-tabs li").removeClass("active");
+			$(this.addClass("active");
+		});
+	</script>
 </html>
