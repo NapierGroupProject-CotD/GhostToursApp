@@ -19,22 +19,16 @@
 		<asset:javascript src="application.js"/>
 		<g:layoutHead/>
 	</head>
-	<nav class="navbar navbar-default">
+
+	<nav class="navbar">
 		<div  class="container">
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collpase">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<div class="navbar-collapse collapse">
-					<ul class="nav navbar-nav">
-						<li class="active"><g:link controller="staff" action="bookerDashboard">Bookings</g:link></li>
-						<li class="active"><g:link controller="staff" action="guideDashboard">Guide</g:link></li>
-						<li class="active"><g:link controller="staff" action="managerDashboard">Manager</g:link></li>
-						<li class="active"><g:link controller="staff" action="logout">Logout</g:link></li>
-					</ul>
-				</div>
+				<ul class="nav nav-tabs" role="tablist">
+				<li role="presentation" class="active"><g:link controller="staff" action="bookerDashboard" data-toggle="tab">Bookings</g:link></li>
+				<li role="presentation" data-toggle="tab"><g:link controller="staff" action="guideDashboard" data-toggle="tab">Guide</g:link></li>
+				<li role="presentation" data-toggle="tab"><g:link controller="staff" action="managerDashboard" data-toggle="tab">Manager</g:link></li>
+				<li role="presentation"><g:link controller="staff" action="logout">Logout</g:link></li>
+				</ul>
 			</div>
 		</div>
 	</nav>
