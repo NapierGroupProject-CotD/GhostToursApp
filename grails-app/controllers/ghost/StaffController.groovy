@@ -140,6 +140,7 @@ class StaffController {
 		if(session.getAttribute("selectedDate") == null){
 			selectedDate = Calendar.instance
 			session.setAttribute("selectedDate", selectedDate)
+			session.setAttribute("today", true)
 		} else {
 			selectedDate = session.getAttribute("selectedDate").clone()
 		}
@@ -153,7 +154,7 @@ class StaffController {
 		//println "xxxxx"+end.format("yyyy-MM-dd HH:mm:ss")
 		
 		def futureToursList = Tour.findAllByDatetimeBetween(start.getTime(), end.getTime())
-		session.setAttribute("today", true)
+		//session.setAttribute("today", true)
 		
 		[staffName:loggedInStaff.name, futureToursList:futureToursList]
 
