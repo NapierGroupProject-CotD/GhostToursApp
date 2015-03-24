@@ -2,7 +2,6 @@ package db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-//import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,46 +9,69 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-//import java.util.Date;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
+import rotaGenerator.WeekRota;
 import dataObjects.Guide;
 import dataObjects.Guides;
 import dataObjects.Tour;
 import dataObjects.Tours;
 
 public class dbConnect {
-	private Connection 	connection = null;
-	private Statement 	statement = null;
-	private ResultSet 	resultSet = null;
+	private Connection connection = null;
+	private Statement statement = null;
+	private ResultSet resultSet = null;
 
-	public void readDataBase() throws Exception {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");		/* Load the MySQL driver. One per DB instance. */
-			connection = DriverManager.getConnection( 	/* Setup the connection with the DB */
-					"jdbc:mysql://localhost/ghost2?" + "user=admin&password=admin"
-			);
-		      statement = connection.createStatement();
-		      resultSet = statement.executeQuery( "select * from ghost2.staff" );
-		//      writeMetaData(resultSet);
-		      getGuides(resultSet);
+	public void write(WeekRota week) throws Exception {
 
-		} catch (SQLException e) {
-			throw e;
-		} 		
-		statement.close();
-		resultSet.close();
-		
 		try {
-		      statement = connection.createStatement();
-		      resultSet = statement.executeQuery( "select * from ghost2.tour" );
-		//      writeMetaData(resultSet);
-		      getTours(resultSet);
-		      
+			Class.forName("com.mysql.jdbc.Driver");
+			connection = DriverManager
+					.getConnection("jdbc:mysql://localhost/ghost2?"
+							+ "user=admin&password=admin");
+
+			TreeMap<Tour, Guide> forWriting = week.getAll();
+
+			for (Entry<Tour, Guide> entry : forWriting.entrySet()) {
+				Tour tour = entry.getKey();
+				Guide guide = entry.getValue();
+
+				statement = connection.createStatement();
+				statement.executeUpdate("update ghost2.tour set staff_id = "
+						+ guide.get_idi() + " where id = " + tour.get_id()
+						+ ";");
+			}
 		} catch (SQLException e) {
 			throw e;
 		} finally {
 			close();
-		}	
+		}
+	}
+
+	public void readDataBase() throws Exception {
+		try {
+			Class.forName("com.mysql.jdbc.Driver"); 
+			connection = DriverManager.getConnection(
+			"jdbc:mysql://localhost/ghost2?" + "user=admin&password=admin");
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery("select * from ghost2.staff");
+			getGuides(resultSet);
+
+		} catch (SQLException e) {
+			throw e;
+		}
+		
+		try {
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery("select * from ghost2.tour");
+			getTours(resultSet);
+
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			close();
+		}
 	}
 
 	private void getTours(ResultSet resultSet2) throws SQLException {
@@ -58,10 +80,10 @@ public class dbConnect {
 			LocalDate date = resultSet.getDate("datetime").toLocalDate();
 			LocalTime time = resultSet.getTime("datetime").toLocalTime();
 			String type = typeQuery(resultSet.getInt("tour_type_id"));
-			Tour tour = new Tour(date, time, type);
+			int id = resultSet.getInt("id");
+			Tour tour = new Tour(date, time, type, id);
 			tours.add(tour);
 		}
-		System.out.println(tours.toString());		
 	}
 
 	private String typeQuery(int type_id) {
@@ -69,55 +91,52 @@ public class dbConnect {
 		ResultSet newResultSet;
 		try {
 			Statement newStatement = connection.createStatement();
-			newResultSet = newStatement.executeQuery( "select type_name from ghost2.tour_type where type_id = " + type_id );
-			while (newResultSet.next()){
+			newResultSet = newStatement
+					.executeQuery("select type_name from ghost2.tour_type where id = "
+							+ type_id);
+			while (newResultSet.next()) {
 				type = newResultSet.getString("type_name");
 			}
-		} catch (SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return type;
 	}
 
-/*	private void writeMetaData(ResultSet resultSet) throws SQLException {
-		System.out.println("The columns in the table are: ");
-		System.out.println("Table: " + resultSet.getMetaData().getTableName(1));
-		for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
-			System.out.println("Column " + i + " " + resultSet.getMetaData().getColumnName(i));
-		}
-	}*/
-
 	private void getGuides(ResultSet resultSet) throws SQLException {
 		Guides guides = new Guides();
 		while (resultSet.next()) {
-			Guide guide = new Guide(resultSet.getString("name"), getAvailability(resultSet.getInt("id")));
+			Guide guide = new Guide(resultSet.getString("name"),
+					getAvailability(resultSet.getInt("id")),
+					resultSet.getInt("id"));
 			guides.add(guide);
 		}
-		System.out.println(guides.toString());
 	}
 
 	private ArrayList<DayOfWeek> getAvailability(int staff_id) {
 		ArrayList<DayOfWeek> availability = new ArrayList<DayOfWeek>();
 		try {
 			statement = connection.createStatement();
-			resultSet = statement.executeQuery( "select * from ghost2.available_day where staff_id = " + staff_id );
-		
-			while (resultSet.next()) {	
-				availability.add( DayOfWeek.valueOf(resultSet.getString("day")) );
+			resultSet = statement
+					.executeQuery("select * from ghost2.available_day where staff_id = "
+							+ staff_id);
+
+			while (resultSet.next()) {
+				availability.add(DayOfWeek.valueOf(resultSet.getString("day")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		if (availability.size() == 0) {
-			availability.add(DayOfWeek.MONDAY); 
+			availability.add(DayOfWeek.MONDAY);
 			availability.add(DayOfWeek.TUESDAY);
 			availability.add(DayOfWeek.WEDNESDAY);
-			availability.add(DayOfWeek.THURSDAY); 
+			availability.add(DayOfWeek.THURSDAY);
 			availability.add(DayOfWeek.FRIDAY);
-			availability.add(DayOfWeek.SATURDAY);	
+			availability.add(DayOfWeek.SATURDAY);
 			availability.add(DayOfWeek.SUNDAY);
 		}
-		return availability;		
+		return availability;
 	}
 
 	private void close() {

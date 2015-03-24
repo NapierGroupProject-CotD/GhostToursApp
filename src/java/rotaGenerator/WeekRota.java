@@ -1,10 +1,13 @@
 package rotaGenerator;
 import genetics.Genome;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import dataObjects.Guide;	import dataObjects.Guides;
+import dataObjects.Tour;
 
 public class WeekRota extends Genome {		
 	public WeekRota(){ /* Create Blank Week. */	}
@@ -72,5 +75,13 @@ public class WeekRota extends Genome {
 			unfairness = unfairness + (Math.abs(allocatedTours - averageAllocations) / tourCount);
 		}
 		return 1 - unfairness;
+	}
+	public TreeMap<Tour, Guide> getAll(){
+		TreeMap<Tour, Guide> forWriting = new TreeMap<Tour, Guide>();
+		for (Entry<Object, Object> entry : getGenome().entrySet()){
+			DayRota day = (DayRota) entry.getValue();
+			forWriting.putAll(day.getAll());
+		}
+	return forWriting;
 	}
 }
