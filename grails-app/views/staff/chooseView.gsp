@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="layout" content="ghostview"/>
 </head>
 <body>
-<nav>
-	<g:link controller="staff" action="logout">Log Out</g:link>
-</nav>
 
-<div id="chooseViewBox">
+<div id="chooseViewBox"  class="container">
+
 	<g:form id="chooseViewForm" action="changeView">
 		<fieldset>
 			<legend>Choose the view you want to see</legend>
@@ -19,6 +18,7 @@
 		<input type="submit" value="Go To View"/>
 	</g:form>
 </div>
+
 
 </body>
 </html>
