@@ -1,7 +1,5 @@
 package db;
 //import java.time.DayOfWeek;
-import genetics.Genome;
-
 import java.time.LocalDate;
 //import java.time.LocalTime;
 import java.time.Month;
@@ -9,12 +7,6 @@ import java.time.Month;
 
 
 import java.util.ArrayList;
-import java.util.Map.Entry;
-
-
-import java.util.TreeMap;
-
-
 //import dataObjects.*;
 import rotaGenerator.*;
 
