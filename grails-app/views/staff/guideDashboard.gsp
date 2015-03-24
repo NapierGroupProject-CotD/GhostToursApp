@@ -20,9 +20,12 @@
 				<g:if test="${date.get(Calendar.DAY_OF_WEEK)==Calendar.MONDAY || date.get(Calendar.DAY_OF_WEEK)==Calendar.THURSDAY || date.get(Calendar.DAY_OF_WEEK)==Calendar.FRIDAY || date.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY || date.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY}">
 					<g:each in="${tourMap.get(date)}" var="tour">
 						<td>
-							<g:if test="${tour.staff != null}">
+							<g:if test="${tour.staff?.id == loggedInStaff.id}">
 								<g:link controller="tour" action="releaseShift" params="${[tourId:tour.id]}" onclick="return confirm('Release shift?')">${tour.staff.name}</g:link>
 							</g:if>
+							<g:elseif test="${tour.staff != null}">
+								${tour.staff.name}
+							</g:elseif>
 							<g:else>
 								<g:link controller="tour" action="grabShift" params="${[tourId:tour.id]}" onclick="return confirm('Grab shift?')">not allocated</g:link>
 							</g:else>
@@ -33,24 +36,46 @@
 					<g:each in="${tourMap.get(date)}" var="tour" status="i">
 						<g:if test="${i == 0}">
 							<td>
-								<g:if test="${tour.staff != null}">
+								<g:if test="${tour.staff?.id == loggedInStaff.id}">
 									<g:link controller="tour" action="releaseShift" params="${[tourId:tour.id]}" onclick="return confirm('Release shift?')">${tour.staff.name}</g:link>
 								</g:if>
+								<g:elseif test="${tour.staff != null}">
+									${tour.staff.name}
+								</g:elseif>
 								<g:else>
 									<g:link controller="tour" action="grabShift" params="${[tourId:tour.id]}" onclick="return confirm('Grab shift?')">not allocated</g:link>
 								</g:else>
 							</td><td>****</td>
 						</g:if>
 						<g:else>
-							<td><g:if test="${tour.staff != null}"><g:link controller="tour" action="releaseShift" params="${[tourId:tour.id]}" onclick="return confirm('Release shift?')">${tour.staff.name}</g:link></g:if><g:else><g:link controller="tour" action="grabShift" params="${[tourId:tour.id]}" onclick="return confirm('Grab shift?')">not allocated</g:link></g:else></td>
+							<td>
+								<g:if test="${tour.staff?.id == loggedInStaff.id}">
+									<g:link controller="tour" action="releaseShift" params="${[tourId:tour.id]}" onclick="return confirm('Release shift?')">${tour.staff.name}</g:link>
+								</g:if>
+									<g:elseif test="${tour.staff != null}">
+									${tour.staff.name}
+								</g:elseif>
+								<g:else>
+									<g:link controller="tour" action="grabShift" params="${[tourId:tour.id]}" onclick="return confirm('Grab shift?')">not allocated</g:link>
+								</g:else>
+							</td>
 						</g:else>
 					</g:each>
 				</g:elseif>
 				<g:else>
 					<g:each in="${tourMap.get(date)}" var="tour" status="i">
 						<g:if test="${i == 1}">
-							<td><g:if test="${tour.staff != null}"><g:link controller="tour" action="releaseShift" params="${[tourId:tour.id]}" onclick="return confirm('Release shift?')">${tour.staff.name}</g:link></g:if>
-							<g:else><g:link controller="tour" action="grabShift" params="${[tourId:tour.id]}" onclick="return confirm('Grab shift?')">not allocated</g:link></g:else></td><td>****</td>
+							<td>
+								<g:if test="${tour.staff?.id == loggedInStaff.id}">
+									<g:link controller="tour" action="releaseShift" params="${[tourId:tour.id]}" onclick="return confirm('Release shift?')">${tour.staff.name}</g:link>
+								</g:if>
+								<g:elseif test="${tour.staff != null}">
+									${tour.staff.name}
+								</g:elseif>
+								<g:else>
+									<g:link controller="tour" action="grabShift" params="${[tourId:tour.id]}" onclick="return confirm('Grab shift?')">not allocated</g:link>
+								</g:else>
+							</td><td>****</td>
 						</g:if>
 						<g:else>
 							<td><g:if test="${tour.staff != null}"><g:link controller="tour" action="releaseShift" params="${[tourId:tour.id]}" onclick="return confirm('Release shift?')">${tour.staff.name}</g:link></g:if>

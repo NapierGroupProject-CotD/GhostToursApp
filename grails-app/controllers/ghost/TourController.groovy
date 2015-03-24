@@ -74,7 +74,8 @@ class TourController {
 	}
 	def grabShift(){
 		Tour tour = Tour.get(params.tourId)
-		tour.staff= session.getAttribute("loggedInStaff")
+		def staff = Staff.get(session.getAttribute("loggedInStaff").id)
+		tour.staff= staff
 		tour.save(flush:true, failOnError:true)
 		redirect(controller:"staff", action:"guideDashboard") 
 	}
