@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="layout" content="ghostview"/>
 </head>
 <body>
 <nav>
