@@ -23,9 +23,6 @@ class SchedulingService {
 		end.set(Calendar.HOUR, datetime.get(Calendar.HOUR))
 		end.set(Calendar.AM_PM, Calendar.PM)
 		
-		//println "xxxxx"+start.format("yyyy-MM-dd HH:mm:ss")
-		//println "xxxxx"+end.format("yyyy-MM-dd HH:mm:ss")
-		
 		def newTour = Tour.findByTourTypeAndDatetimeBetween(tourType, start.getTime(), end.getTime())
 		if(newTour == null){
 		
