@@ -11,4 +11,7 @@ class Role {
 	static mapping={
 		version false
 	}
+	def getAllStaff() {
+		return staffRoles.collect{it.staff}
+	}
 }

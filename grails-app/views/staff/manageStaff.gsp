@@ -41,13 +41,18 @@
 </div>
 <div id="newStaffFormBox" class="panel-primary">
 	<h4 class="panel-heading">Form for adding new staff member</h4>
+	<div id="errorMessage">
+		<g:if test="${flash.errorMessage}">
+			<label>${flash.errorMessage}</label>
+		</g:if>
+	</div>
 	<g:form id="newStaffForm" action="saveStaff" class="well span6">
 		<fieldset>
 			<input type="text" name="name" required placeholder="Full Name"/><br/>
 			<input type="text" name="phone" required placeholder="Telephone Number"/><br/>
-			<input type="text" name="email" required placeholder="E-Mail"/><br/>
+			<input type="email" name="email" required placeholder="E-Mail"/><br/>
 			<input type="text" name="username"required placeholder="Username"/><br/>
-			<input type="text" name="password" required placeholder="Password"/><br/>
+			<g:hiddenField name="password" value="changeme"/>
 			<g:each in="${Role.list()}" var="role">
 				<g:checkBox name="role" value="${role.id}" checked="false"/><label>${role.name}</label>
 			</g:each>
