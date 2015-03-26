@@ -58,6 +58,7 @@ class BookingController {
 		Calendar now = Calendar.instance
 		if(selectedDate.clearTime() == now.clearTime()){
 			session.setAttribute("today", true)
+			session.setAttribute("selectedDate", null)
 		}
 		
 		redirect(controller:"staff", action:"bookerDashboard")

@@ -1,4 +1,6 @@
 package ghost
+import grails.transaction.Transactional
+
 
 class StaffController {
 
@@ -11,7 +13,22 @@ class StaffController {
 	def logout(){
 		session.invalidate()
 		
-		redirect(controller:"main", action:"index")
+		redirect(controller:"staff", action:"login")
+	}
+	
+	def changePassword(){
+		def staff = session.getAttribute("loggedInStaff")
+	}
+	def savePassword(){
+		if(params.password != params.repeatPassword){
+			flash.errorMessage = "Repeated password does not match!"
+			redirect(action:"changePassword")
+		} else {
+			Staff staff = session.getAttribute("loggedInStaff")
+			staff.password = hashingService.createHash(params.password)
+			staff.save(flush:true)	
+			redirect(action:"logout")
+		}
 	}
 	
 	def chooseView(){
@@ -22,7 +39,7 @@ class StaffController {
 			def password = params.password  //          the values are whatever was entered in the text fields.
 		
 			if(Staff.findByUsername(username) != null){
-				
+		   
 				def correctHash = Staff.findByUsername(username).password
 				if(hashingService.validatePassword(password, correctHash)){
 					loggedInStaff = Staff.findByUsername(username)
@@ -30,24 +47,30 @@ class StaffController {
 					//if login is correct, we put the Staff object in session so we can use it anywhere we want (controllers, gsps)
 					session.setAttribute("loggedInStaff", loggedInStaff) 
 			
-					ArrayList<Role> listOfRoles = loggedInStaff.roles()
+					if(password.equals("changeme")){
+						redirect(action:"changePassword")
+						
+					}else{
+						ArrayList<Role> listOfRoles = loggedInStaff.roles()
 			
-					if(listOfRoles.size > 1){      // I thought that if a member has more than one role, we could have a page where he would select which view to access
-						[listOfRoles:listOfRoles]  // the list of roles is passed to chooseView.gsp. reminder: the naming convention - if a view is not explicitly chosen, the method will look for one with the same name
+						if(listOfRoles.size > 1){      // I thought that if a member has more than one role, we could have a page where he would select which view to access
+							[listOfRoles:listOfRoles]  // the list of roles is passed to chooseView.gsp. reminder: the naming convention - if a view is not explicitly chosen, the method will look for one with the same name
 				
-					} else {
-						if(listOfRoles[0].name.equals("Manager")){        // if the staff member has only one role, the appropriate method is called by the redirect to render the next view. 
-							redirect(action:"managerDashboard")       
 						} else {
-							if(listOfRoles[0].name.equals("Guide")){
-								redirect(action:"guideDashboard")
+							if(listOfRoles[0].name.equals("Manager")){        // if the staff member has only one role, the appropriate method is called by the redirect to render the next view. 
+								redirect(action:"managerDashboard")       
 							} else {
-								if(listOfRoles[0].name.equals("Booker")){
-									redirect(action:"bookerDashboard")
+								if(listOfRoles[0].name.equals("Guide")){
+									redirect(action:"guideDashboard")
+								} else {
+									if(listOfRoles[0].name.equals("Booker")){
+										redirect(action:"bookerDashboard")
+									}
 								}
 							}
-						}
-					}// end listOfRoles.size if else
+						}// end listOfRoles.size if else
+						
+					}// end password changeme if else
 					
 				} else {
 					flash.message = "Username/Password invalid. try again!"
@@ -95,6 +118,16 @@ class StaffController {
 	def guideDashboard(){
 		
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
+		session.setAttribute("isManager", false)
+		def availableGuideMap
+		
+		loggedInStaff.roles().each{ role ->
+			if(role.name.equals("Manager")){
+				session.setAttribute("isManager", true)
+				availableGuideMap = staffService.getAvailableGuideMap()
+			}
+		}
+		
 		def startOfMonth = Calendar.instance
 		startOfMonth.set(Calendar.DATE, 1)
 		startOfMonth.clearTime()
@@ -104,8 +137,6 @@ class StaffController {
 		endOfMonth.set(Calendar.DATE, 1)
 		endOfMonth.clearTime()
 		
-		//println startOfMonth.format("dd-MMM-yy")
-		//println endOfMonth.format("dd-MMM-yy")
 		
 		ArrayList<Calendar> dateList = new ArrayList<Calendar>()
 		ArrayList<Tour> tourList = new ArrayList<Tour>()
@@ -118,24 +149,20 @@ class StaffController {
 			tours.each{ tour->
 				tourCal = Calendar.getInstance()
 				tourCal.setTime(tour.datetime)
-				//println it.format("dd-MM-yy")
+				
 				if(tourCal.clearTime()==it.clearTime()){
 					tourList.add(tour)
 				}
 			}
-			//println it.format("dd-MM-yy")
-			//println tourList
+			
 			tourMap.put(it.clone(), tourList.clone())
-			//println tourMap.get(it.getTime())
 			tourList.clear()
 			dateList.add(it.clone())
 		}
 		
-		println tourMap.get(dateList[5])
-		
-		ArrayList<String> listOfRoles = loggedInStaff.roles()
-		
-		[loggedInStaff:loggedInStaff, dateList:dateList, tourMap:tourMap, tours:tours, listOfRoles:listOfRoles]
+		ArrayList<String> listOfRoles = loggedInStaff.roles()	
+		[loggedInStaff:loggedInStaff, dateList:dateList, tourMap:tourMap, tours:tours, listOfRoles:listOfRoles, availableGuideMap:availableGuideMap]
+
 	}
 	
 	def bookerDashboard(){
@@ -144,6 +171,7 @@ class StaffController {
 		if(session.getAttribute("selectedDate") == null){
 			selectedDate = Calendar.instance
 			session.setAttribute("selectedDate", selectedDate)
+			session.setAttribute("today", true)
 		} else {
 			selectedDate = session.getAttribute("selectedDate").clone()
 		}
@@ -157,7 +185,7 @@ class StaffController {
 		//println "xxxxx"+end.format("yyyy-MM-dd HH:mm:ss")
 		
 		def futureToursList = Tour.findAllByDatetimeBetween(start.getTime(), end.getTime())
-		session.setAttribute("today", true)
+		//session.setAttribute("today", true)
 		
 		ArrayList<String> listOfRoles = loggedInStaff.roles()
 		
@@ -168,6 +196,7 @@ class StaffController {
 	def manageStaff() {
 		def staffList = Staff.list()                  // Domain.list() is equivalent to SELECT * FROM table
 		def mapOfRoles = staffService.mapOfRoles()  //service method call
+
 		
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
 		ArrayList<String> listOfRoles = loggedInStaff.roles()
@@ -176,27 +205,42 @@ class StaffController {
 	}
 	
 	def saveStaff(){
-		Staff newStaff = new Staff()
-		newStaff.name= params.name
-		newStaff.phone = params.phone
-		newStaff.email = params.email
-		newStaff.username = params.username
-		newStaff.password = hashingService.createHash(params.password)
-		
-		newStaff.save(flush:true, failOnError:true)
-		
-		def role = params.role
-		if(role instanceof String){
-			StaffRole.link(newStaff, Role.get(role.toInteger()))
-		} else {
-			role.each{ tempRole->
-				StaffRole.link(newStaff, Role.get(tempRole.toInteger()))
+		boolean unique = true
+		String errorMessage = null
+		Staff.list().each{ 
+			if(params.username == it.username){
+				 errorMessage = "Username already exists!"
+				unique = false
 			}
+			if(params.email == it.email){
+				 errorMessage = "Email already exists!"
+				unique = false
+			}
+			if(params.phone == it.phone){
+				 errorMessage = "Phone number already exists!"
+				unique = false
+			}
+		} 	
+		
+		
+		if(unique){
+			Staff newStaff = new Staff(params)
+			newStaff.password = hashingService.createHash(params.password)
+			newStaff.save(flush:true, failOnError:true)
+			
+			def role = params.role
+			if(role instanceof String){
+				StaffRole.link(newStaff, Role.get(role.toInteger()))
+			} else {
+				role.each{ tempRole->
+					StaffRole.link(newStaff, Role.get(tempRole.toInteger()))
+				}
+			}	
+		} else {
+			flash.errorMessage = errorMessage
 		}
 		
-		
-		
-		redirect(action:"manageStaff")
+		redirect(action:"manageStaff")		
 	}
 	
 	def deleteStaff(){

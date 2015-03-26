@@ -1,6 +1,3 @@
-<%@ page import="ghost.Tour"%>
-<%@ page import="ghost.TourType"%>
-
 <!DOCTYPE html>
 <html>
 <head>
