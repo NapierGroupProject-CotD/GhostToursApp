@@ -111,10 +111,12 @@ class StaffController {
 	
 	def managerDashboard(){
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
-		[staffName:loggedInStaff.name]
+		ArrayList<String> listOfRoles = loggedInStaff.roles()
+		[staffName:loggedInStaff.name, listOfRoles:listOfRoles]
 	}
 	
 	def guideDashboard(){
+		
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
 		session.setAttribute("isManager", false)
 		def availableGuideMap
@@ -158,9 +160,9 @@ class StaffController {
 			dateList.add(it.clone())
 		}
 		
-		
-		
-		[loggedInStaff:loggedInStaff, dateList:dateList, tourMap:tourMap, tours:tours, availableGuideMap:availableGuideMap]
+		ArrayList<String> listOfRoles = loggedInStaff.roles()	
+		[loggedInStaff:loggedInStaff, dateList:dateList, tourMap:tourMap, tours:tours, listOfRoles:listOfRoles, availableGuideMap:availableGuideMap]
+
 	}
 	
 	def bookerDashboard(){
@@ -185,7 +187,9 @@ class StaffController {
 		def futureToursList = Tour.findAllByDatetimeBetween(start.getTime(), end.getTime())
 		//session.setAttribute("today", true)
 		
-		[staffName:loggedInStaff.name, futureToursList:futureToursList]
+		ArrayList<String> listOfRoles = loggedInStaff.roles()
+		
+		[staffName:loggedInStaff.name, futureToursList:futureToursList, listOfRoles:listOfRoles]
 
 	}
 	
@@ -194,7 +198,10 @@ class StaffController {
 		def mapOfRoles = staffService.mapOfRoles()  //service method call
 
 		
-		[staffList:staffList, mapOfRoles:mapOfRoles]  // these are passed to manageStaff.gsp
+		Staff loggedInStaff = session.getAttribute("loggedInStaff")
+		ArrayList<String> listOfRoles = loggedInStaff.roles()
+		
+		[staffList:staffList, mapOfRoles:mapOfRoles, listOfRoles:listOfRoles]  // these are passed to manageStaff.gsp
 	}
 	
 	def saveStaff(){

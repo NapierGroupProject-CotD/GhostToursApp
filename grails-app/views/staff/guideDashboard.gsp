@@ -5,10 +5,6 @@
 <meta name="layout" content="ghostview"/>
 </head>
 <body>
-<nav>
-	<g:link action="logout">Log out</g:link>
-</nav>
-
 <div id="timetableBox">
 <g:if test="${!session.getAttribute("isManager")}">
 	<table>
