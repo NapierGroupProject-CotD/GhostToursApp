@@ -23,7 +23,7 @@
 					<li>
 					<g:form action="viewStaff">
 						<g:hiddenField name="staffId" value="${staffMember.id}"/>
-						<input type="submit" value="View Details" class="btn btn-lg btn-info btn-xs">
+						<input type="submit" value="Edit Details" class="btn btn-lg btn-info btn-xs">
 					</g:form>
 					</li>
 					<li>
