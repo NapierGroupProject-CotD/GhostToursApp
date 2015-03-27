@@ -21,6 +21,7 @@
 	</tr>	
 </table>
 <input type="submit" value="Update Details"/>
+<input Type="button" value="Back" onClick="history.go(-1);return true;"/>
 </g:form>
 </div>
 
