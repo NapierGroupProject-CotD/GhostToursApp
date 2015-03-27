@@ -1,5 +1,7 @@
 package db;
 
+import genetics.Genome;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -12,18 +14,17 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import rotaGenerator.WeekRota;
 import dataObjects.Guide;
 import dataObjects.Guides;
 import dataObjects.Tour;
 import dataObjects.Tours;
 
-public class dbConnect {
+public class DbConnect {
 	private Connection connection = null;
 	private Statement statement = null;
 	private ResultSet resultSet = null;
 
-	public void write(WeekRota week) throws Exception {
+	public void write(Genome week) throws Exception {
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");

@@ -12,12 +12,12 @@ public class GivenPeriodRota extends Genome{
 		
 		int dayCount = numberOfDays;
 
-		while ( dayCount > 7 ) { // Never actually used....
+		while ( dayCount > 7 ) {
 			LocalDate currentDate = periodBegins.plusDays(dayCount);
 			this.writeGene(currentDate, new WeekRota(currentDate));	
-			dayCount = dayCount - 7; // #Days in a week.
+			dayCount = dayCount - 7; // Days in a week.
 		}
-		while ( dayCount > 0 ) {
+		while ( dayCount >= 0 ) {
 			LocalDate currentDate = periodBegins.plusDays(dayCount);
 			this.writeGene(currentDate, new DayRota(currentDate));	
 			dayCount--;
@@ -27,8 +27,8 @@ public class GivenPeriodRota extends Genome{
 	public TreeMap<Tour, Guide> getAll(){
 		TreeMap<Tour, Guide> forWriting = new TreeMap<Tour, Guide>();
 		for (Entry<Object, Object> entry : getGenome().entrySet()){
-			DayRota day = (DayRota) entry.getValue();
-			forWriting.putAll(day.getAll());
+			Genome o = (Genome) entry.getValue();
+			forWriting.putAll(o.getAll());
 		}
 	return forWriting;
 	}
