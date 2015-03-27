@@ -38,7 +38,7 @@
 				<td>
 					<g:form action="addRole">
 						<g:hiddenField name="staffId" value="${staffMember.id}"/>
-						<g:select style="color:black" name="roleToAdd" from="${Role.list()}" optionKey="id" optionValue="name" noSelection="['':'Select...']" onChange="this.form.submit()"/>
+						<g:select name="roleToAdd" from="${Role.list()}" optionKey="id" optionValue="name" noSelection="['':'Select...']" onChange="this.form.submit()"/>
 					</g:form>
 				</td>
 				<td>
