@@ -1,4 +1,6 @@
 package ghost
+import org.xhtmlrenderer.swing.HTMLTest.RefreshPageAction;
+
 import grails.transaction.Transactional
 
 
@@ -210,6 +212,7 @@ class StaffController {
 	}
 	
 	def viewStaff() {
+		println 'getting view for staff no. '+params.staffId
 		def staffMember = Staff.get(params.staffId)
 		[staffMember:staffMember]
 	}
@@ -269,6 +272,37 @@ class StaffController {
 		staff.save(flush:true, failOnError:true)
 		
 		redirect(action:"manageStaff")
+	}
+	
+	def removeRole() {
+		Staff staffMember = Staff.get(params.staffId)
+		Role roleToRemove = Role.get(params.roleId)
+		
+		StaffRole.unlink(staffMember, roleToRemove)
+		
+		staffMember.save(flush:true, failOnError:true)
+		redirect(action:"manageStaff")
+	}
+	
+	def addRole() {
+		boolean hasAlready = false
+		Staff staffMember = Staff.get(params.staffId)
+		Role newRole = Role.get(params.roleToAdd)
+		
+		staffMember.roles().each{
+			if(newRole.equals(it)){
+				hasAlready = true
+			}
+		}
+		
+		if(hasAlready){
+			redirect(action:"manageStaff")
+		} else {
+			StaffRole.link(staffMember, newRole)
+			staffMember.save(flush:true, failOnError:true)
+			redirect(action:"manageStaff")
+		}
+		
 	}
 	
 }

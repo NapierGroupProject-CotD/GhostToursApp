@@ -13,11 +13,34 @@
 <table class="table table-striped table condensed">
 	<tr class="primary"> 
 		
-		<th><span class="glyphicon glyphicon-user text-primary"></span>Name</th><th>Phone</th><th><span class="glyphicon glyphicon-envelope text-success"></span>E-mail</th><th><span class="glyphicon glyphicon-eye-open text-danger"></span>Role</th><th>Actions</th>
+		<th><span class="glyphicon glyphicon-user text-primary"></span>Name</th>
+		<th>Phone</th>
+		<th><span class="glyphicon glyphicon-envelope text-success"></span>E-mail</th>
+		<th><span class="glyphicon glyphicon-eye-open text-danger"></span>Current Roles</th>
+		<th>Add Role</th>
+		<th>Other Actions</th>
 	<tr class="info">
 	<g:each in="${staffList}" var="staffMember">
 			<tr class="light"> 
-				<td>${staffMember.name}</td><td>${staffMember.phone}</td><td>${staffMember.email}</td><td>${mapOfRoles.get(staffMember).name}</td>
+				<td>${staffMember.name}</td>
+				<td>${staffMember.phone}</td>
+				<td>${staffMember.email}</td>
+				<td>
+					<g:each in="${staffMember.roles()}" var="role">
+					<g:form action="removeRole">
+						<g:hiddenField name="roleId" value="${role.id}"/> 
+						<g:hiddenField name="staffId" value="${staffMember.id}"/>
+						<input type="submit" value="${role.name}"/>
+					</g:form>
+					</g:each>
+					Click role to remove.
+				</td>
+				<td>
+					<g:form action="addRole">
+						<g:hiddenField name="staffId" value="${staffMember.id}"/>
+						<g:select style="color:black" name="roleToAdd" from="${Role.list()}" optionKey="id" optionValue="name" noSelection="['':'Select...']" onChange="this.form.submit()"/>
+					</g:form>
+				</td>
 				<td>
 					<ul class="list-inline">
 					<li>
