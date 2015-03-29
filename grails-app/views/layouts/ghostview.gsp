@@ -3,8 +3,8 @@
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <%@page import="ghost.Staff"%>
-<%@page import="ghost.StaffRole"%>
+<!--[if (gt IE 9)|!(IE)]><!--> 
+<%@page import="ghost.Role"%>
 <html lang="en" class="no-js"><!--<![endif]-->
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -30,9 +30,16 @@
 		<div  class="container">
 			<div class="navbar-header">
 				<ul class="nav nav-tabs" role="tablist">
-						<g:each in="${listOfRoles}" var="role">
+					<g:if test="${session.getAttribute("isManager")}" >
+						<g:each in="${Role.list()}" var="role">
 					<li><g:link name="role" value="${role.id}" action="${role.name}Dashboard">${role.name}</g:link></li>
 						</g:each>
+					</g:if>
+					<g:else>
+						<g:each in="${session.getAttribute("loggedInStaff").roles()}" var="role">
+					<li><g:link name="role" value="${role.id}" action="${role.name}Dashboard">${role.name}</g:link></li>
+						</g:each>
+					</g:else>
 					<li role="presentation"><g:link controller="staff" action="logout">Logout</g:link></li>
 				</ul>
 			</div>

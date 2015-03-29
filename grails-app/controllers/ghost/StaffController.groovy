@@ -1,4 +1,6 @@
 package ghost
+import org.xhtmlrenderer.swing.HTMLTest.RefreshPageAction;
+
 import grails.transaction.Transactional
 
 
@@ -45,7 +47,12 @@ class StaffController {
 					loggedInStaff = Staff.findByUsername(username)
 			
 					//if login is correct, we put the Staff object in session so we can use it anywhere we want (controllers, gsps)
-					session.setAttribute("loggedInStaff", loggedInStaff) 
+					session.setAttribute("loggedInStaff", loggedInStaff)
+					loggedInStaff.roles().each{
+						if(it.name.equals("Manager")){
+							session.setAttribute("isManager", true)
+						}
+					} 
 			
 					if(password.equals("changeme")){
 						redirect(action:"changePassword")
@@ -204,6 +211,12 @@ class StaffController {
 		[staffList:staffList, mapOfRoles:mapOfRoles, listOfRoles:listOfRoles]  // these are passed to manageStaff.gsp
 	}
 	
+	def viewStaff() {
+		println 'getting view for staff no. '+params.staffId
+		def staffMember = Staff.get(params.staffId)
+		[staffMember:staffMember]
+	}
+	
 	def saveStaff(){
 		boolean unique = true
 		String errorMessage = null
@@ -250,6 +263,46 @@ class StaffController {
 		staff.delete(flush:true, failOnError:true)
 		
 		redirect(action:"manageStaff")
+	}
+	
+	def updateStaff(){
+		println 'start update'
+		Staff staff = Staff.get(params.staffId)
+		staff.properties = params
+		staff.save(flush:true, failOnError:true)
+		
+		redirect(action:"manageStaff")
+	}
+	
+	def removeRole() {
+		Staff staffMember = Staff.get(params.staffId)
+		Role roleToRemove = Role.get(params.roleId)
+		
+		StaffRole.unlink(staffMember, roleToRemove)
+		
+		staffMember.save(flush:true, failOnError:true)
+		redirect(action:"manageStaff")
+	}
+	
+	def addRole() {
+		boolean hasAlready = false
+		Staff staffMember = Staff.get(params.staffId)
+		Role newRole = Role.get(params.roleToAdd)
+		
+		staffMember.roles().each{
+			if(newRole.equals(it)){
+				hasAlready = true
+			}
+		}
+		
+		if(hasAlready){
+			redirect(action:"manageStaff")
+		} else {
+			StaffRole.link(staffMember, newRole)
+			staffMember.save(flush:true, failOnError:true)
+			redirect(action:"manageStaff")
+		}
+		
 	}
 	
 }
