@@ -1,5 +1,4 @@
 package ghost
-import org.xhtmlrenderer.swing.HTMLTest.RefreshPageAction;
 
 import grails.transaction.Transactional
 
@@ -10,7 +9,12 @@ class StaffController {
 	def bookingService
 	def hashingService
 	
-	def login(){}
+	def login(){
+		if(session.getAttribute("loggedInStaff")){
+			redirect(action:"chooseView")
+		}
+		
+	}
 	
 	def logout(){
 		session.invalidate()
@@ -52,31 +56,32 @@ class StaffController {
 						if(it.name.equals("Manager")){
 							session.setAttribute("isManager", true)
 						}
+						if(it.name.equals("Booker")){
+							session.setAttribute("isBooker", true)
+						}
+						if(it.name.equals("Guide")){
+							session.setAttribute("isGuide", true)
+						}
 					} 
-			
+					
 					if(password.equals("changeme")){
 						redirect(action:"changePassword")
 						
 					}else{
-						ArrayList<Role> listOfRoles = loggedInStaff.roles()
-			
-						if(listOfRoles.size > 1){      // I thought that if a member has more than one role, we could have a page where he would select which view to access
-							[listOfRoles:listOfRoles]  // the list of roles is passed to chooseView.gsp. reminder: the naming convention - if a view is not explicitly chosen, the method will look for one with the same name
-				
+					
+						ArrayList<Role> listOfRoles = loggedInStaff.roles().sort{it.id}
+						if(Role.findByName("Manager") in listOfRoles){        // if the staff member has only one role, the appropriate method is called by the redirect to render the next view. 
+							redirect(action:"managerDashboard")       
 						} else {
-							if(listOfRoles[0].name.equals("Manager")){        // if the staff member has only one role, the appropriate method is called by the redirect to render the next view. 
-								redirect(action:"managerDashboard")       
+							if(Role.findByName("Booker") in listOfRoles){
+								redirect(action:"bookerDashboard")
 							} else {
-								if(listOfRoles[0].name.equals("Guide")){
+								if(Role.findByName("Guide") in listOfRoles){
 									redirect(action:"guideDashboard")
-								} else {
-									if(listOfRoles[0].name.equals("Booker")){
-										redirect(action:"bookerDashboard")
-									}
 								}
 							}
-						}// end listOfRoles.size if else
-						
+						}
+					
 					}// end password changeme if else
 					
 				} else {
@@ -92,12 +97,23 @@ class StaffController {
 		
 		} else {
 			loggedInStaff = session.getAttribute("loggedInStaff")
-			ArrayList<String> listOfRoles = loggedInStaff.roles()
-			[listOfRoles:listOfRoles]
+			ArrayList<Role> listOfRoles = loggedInStaff.roles().sort{it.id}
+			if(Role.findByName("Manager") in listOfRoles){        // if the staff member has only one role, the appropriate method is called by the redirect to render the next view. 
+				redirect(action:"managerDashboard")       
+			} else {
+				if(Role.findByName("Booker") in listOfRoles){
+					redirect(action:"bookerDashboard")
+				} else {
+					if(Role.findByName("Guide") in listOfRoles){
+						redirect(action:"guideDashboard")
+					}
+				}
+			}
 		}
 			
 	}// end chooseView
 	
+	/*
 	def changeView(){
 		def roleId = params.role
 		def chosenRole = Role.get(roleId.toInteger()).name
@@ -114,7 +130,7 @@ class StaffController {
 			}
 		} // end if else
 		
-	}//end changeView
+	}//end changeView */
 	
 	def managerDashboard(){
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")

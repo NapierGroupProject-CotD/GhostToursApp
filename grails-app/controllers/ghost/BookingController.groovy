@@ -6,14 +6,13 @@ class BookingController {
     def index() { }
 	
 	def newBookingDetails(){
+		
 		if(params.chosenTour == null) {
 			flash.message = "Please select tour!"
 			redirect(controller:"staff", action:"bookerDashboard")
 		} else {
-		
 			def tour = Tour.get(params.chosenTour)
 			def remainingTourPlaces = tour.getRemainingPlaces()
-			
 			def tourBookings = Booking.findAllByTour(tour)
 
 			[tour:tour, remainingTourPlaces:remainingTourPlaces, tourBookings:tourBookings]

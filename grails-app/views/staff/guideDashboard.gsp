@@ -7,9 +7,13 @@
 <meta name="layout" content="ghostview"/>
 </head>
 <body>
+
+<g:if test="${session.getAttribute("isGuide")}">
+	<g:link controller="dateUnavailable" action="showDatesUnavailable">Update Availability</g:link>
+</g:if>
+
 <div id="timetableBox">
 <g:if test="${!session.getAttribute("isManager")}">
-	<g:link controller="dateUnavailable" action="showDatesUnavailable">Update Availability</g:link>
 	<table>
 		<tr>
 			<th>Date</th><th>3.30 UG</th><th>7.30 DD</th><th>8pm UG</th><th>8.30 GY</th><th>9.30 DD</th>
@@ -25,7 +29,7 @@
 						<g:else>
 							not allocated
 						</g:else><br/>
-						${tour.tourType.spaces - tour.getRemainingPlaces()} / ${tour.tourType.spaces}
+						<g:link controller="booking" action="newBookingDetails" params="${[chosenTour:tour.id]}">${tour.tourType.spaces - tour.getRemainingPlaces()} / ${tour.tourType.spaces}</g:link>
 					</td>
 				</g:each>
 			</tr>

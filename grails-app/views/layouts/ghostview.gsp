@@ -32,12 +32,12 @@
 				<ul class="nav nav-tabs" role="tablist">
 					<g:if test="${session.getAttribute("isManager")}" >
 						<g:each in="${Role.list()}" var="role">
-					<li><g:link name="role" value="${role.id}" action="${role.name}Dashboard">${role.name}</g:link></li>
+					<li><g:link name="role" value="${role.id}" controller="staff" action="${role.name}Dashboard">${role.name}</g:link></li>
 						</g:each>
 					</g:if>
 					<g:else>
 						<g:each in="${session.getAttribute("loggedInStaff").roles()}" var="role">
-					<li><g:link name="role" value="${role.id}" action="${role.name}Dashboard">${role.name}</g:link></li>
+					<li><g:link name="role" value="${role.id}" controller="staff" action="${role.name}Dashboard">${role.name}</g:link></li>
 						</g:each>
 					</g:else>
 					<li role="presentation"><g:link controller="staff" action="logout">Logout</g:link></li>

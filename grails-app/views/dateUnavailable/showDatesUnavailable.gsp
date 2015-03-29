@@ -5,8 +5,6 @@
 <asset:stylesheet src="datepicker.css"/>
 <asset:javascript src="datepicker.js"/>
 <meta name="layout" content="ghostview"/>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 </head>
 <body>
 <div id="datePickerBox">
@@ -35,7 +33,7 @@
 		</tr>
 		<g:each in="${datesUnavailable.sort{it.date}}" var="dateUnavailable">
 			<tr>
-				<td>${dateUnavailable.date.format("dd/MM/yy")}</td>
+				<td>${dateUnavailable.date.format("EEEE dd/MM/yy")}</td>
 				<td><g:form action="deleteDateUnavailable">
 						<g:hiddenField name="dateUnavailableId" value="${dateUnavailable.id}"/>
 						<input type="submit" value="X" onclick="return confirm('Delete date?')"/>
