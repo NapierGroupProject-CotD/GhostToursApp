@@ -24,7 +24,8 @@
 						</g:if>
 						<g:else>
 							not allocated
-						</g:else>
+						</g:else><br/>
+						${tour.tourType.spaces - tour.getRemainingPlaces()} / ${tour.tourType.spaces}
 					</td>
 				</g:each>
 			</tr>
@@ -53,6 +54,8 @@
 								<g:select name="staff" from="${availableGuideMap.get(date.get(Calendar.DAY_OF_WEEK))}" optionKey="id" optionValue="name" noSelection="['':'not allocated']" onChange="this.form.submit()"/>
 							</g:form>
 						</g:else>
+						<br/>
+						<g:link controller="booking" action="newBookingDetails" params="${[chosenTour:tour.id]}">${tour.tourType.spaces - tour.getRemainingPlaces()} / ${tour.tourType.spaces}</g:link>
 					</td>
 				</g:each>
 			</tr>

@@ -11,7 +11,7 @@ class BookingController {
 			redirect(controller:"staff", action:"bookerDashboard")
 		} else {
 		
-			def tour = Tour.get(params.chosenTour.toInteger())
+			def tour = Tour.get(params.chosenTour)
 			def remainingTourPlaces = tour.getRemainingPlaces()
 			
 			def tourBookings = Booking.findAllByTour(tour)

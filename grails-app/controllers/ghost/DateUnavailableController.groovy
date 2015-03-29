@@ -18,7 +18,7 @@ class DateUnavailableController {
 	def saveDateUnavailable(){
 		
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
-		DateFormat format = new SimpleDateFormat("dd/MM/yyy", Locale.ENGLISH)
+		DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
 		try{
 			Date date= format.parse(params.date)
 			if(Tour.findByDatetimeGreaterThan(date)==null){

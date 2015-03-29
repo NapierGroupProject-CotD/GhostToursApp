@@ -56,22 +56,6 @@ class TourController {
 		}// end upto loop
 	}//end generateTours
 	
-	/* 
-	def releaseShift(){
-		Tour tour = Tour.get(params.tourId)
-		tour.staff= null
-		tour.save(flush:true, failOnError:true)
-		redirect(controller:"staff", action:"guideDashboard")
-		
-	}
-	def grabShift(){
-		Tour tour = Tour.get(params.tourId)
-		def staff = Staff.get(session.getAttribute("loggedInStaff").id)
-		tour.staff= staff
-		tour.save(flush:true, failOnError:true)
-		redirect(controller:"staff", action:"guideDashboard") 
-	}
-	*/
 	
 	def setTourStaff(){
 		def tour = Tour.get(params.tourId)
