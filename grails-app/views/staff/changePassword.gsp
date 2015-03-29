@@ -30,7 +30,7 @@
 			<input type="text" name="password"required placeholder="Password" class="form-control"/><br/>
 			<input type="text" name="repeatPassword" required placeholder="Repeat Password" class="form-control"/><br/>
 		</fieldset>
-		<input type="submit" value="Log In" class="btn btn-lg btn-primary btn-block"/>
+		<input type="submit" value="Confirm" class="btn btn-lg btn-primary btn-block"/>
 
 	</g:form>
 </div>
