@@ -11,6 +11,6 @@
 				</g:each>
 			</tr>
 		</table>
-		<button>Write Changes to Database.</button>
+		<g:link controller="generator">Write Changes to Database.</g:link>
 	</body>
 </html>
