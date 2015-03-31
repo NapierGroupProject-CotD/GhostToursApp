@@ -9,7 +9,8 @@
 <body>
 
 <div id="staffMemberBox" class="panel panel-primary">
-<h4>List of all members</h4>
+<h4>List of inactive members</h4>
+<g:link action="managerDashboard">Go back</g:link>
 <table class="table table-striped table condensed">
 	<tr class="primary"> 
 		
@@ -20,14 +21,14 @@
 		<th>Add Role</th>
 		<th>Other Actions</th>
 	<tr class="info">
-	<g:each in="${staffList}" var="staffMember">
+	<g:each in="${inactiveStaffList}" var="staffMember">
 			<tr class="light"> 
 				<td>${staffMember.name}</td>
 				<td>${staffMember.phone}</td>
 				<td>${staffMember.email}</td>
 				<td>
 					<g:each in="${staffMember.roles()}" var="role">
-					<g:form action="removeRole">
+					<g:form controller="staff" action="removeRole">
 						<g:hiddenField name="roleId" value="${role.id}"/> 
 						<g:hiddenField name="staffId" value="${staffMember.id}"/>
 						<input type="submit" value="${role.name}"/>
@@ -36,7 +37,7 @@
 					Click role to remove.
 				</td>
 				<td>
-					<g:form action="addRole">
+					<g:form controller="staff" action="addRole">
 						<g:hiddenField name="staffId" value="${staffMember.id}"/>
 						<g:select name="roleToAdd" from="${Role.list()}" optionKey="id" optionValue="name" noSelection="['':'Select...']" onChange="this.form.submit()"/>
 					</g:form>
@@ -44,15 +45,15 @@
 				<td>
 					<ul class="list-inline">
 					<li>
-					<g:form action="viewStaff">
+					<g:form controller="staff" action="viewStaff">
 						<g:hiddenField name="staffId" value="${staffMember.id}"/>
 						<input type="submit" value="Edit Details" class="btn btn-lg btn-info btn-xs">
 					</g:form>
 					</li>
 					<li>
-					<g:form action="deleteStaff">
+					<g:form controller="staff" action="toggleStaffStatus">
 						<g:hiddenField name="staffId" value="${staffMember.id}"/>
-						<input type="submit" value="Delete" onclick="return confirm('Permanently delete staff member details?')" class="btn btn-lg btn-info btn-xs">
+						<input type="submit" value="Set active" onclick="return confirm('Set staff status to active?')" class="btn btn-lg btn-info btn-xs">
 					</g:form>
 					</li>
 					</ul>
@@ -61,34 +62,7 @@
 		
 	</g:each>
 </table>
+<g:link action="managerDashboard">Go back</g:link>
 </div>
-<div id="newStaffFormBox" class="panel-primary">
-	<h4 class="panel-heading">Form for adding new staff member</h4>
-	<div id="errorMessage">
-		<g:if test="${flash.errorMessage}">
-			<label>${flash.errorMessage}</label>
-		</g:if>
-	</div>
-	<g:form id="newStaffForm" action="saveStaff" class="well span6">
-		<fieldset>
-			<input type="text" name="name" required placeholder="Full Name"/><br/>
-			<input type="text" name="phone" required placeholder="Telephone Number"/><br/>
-			<input type="email" name="email" required placeholder="E-Mail"/><br/>
-			<input type="text" name="username"required placeholder="Username"/><br/>
-			<g:hiddenField name="password" value="changeme"/>
-			<g:each in="${Role.list()}" var="role">
-				<g:checkBox name="role" value="${role.id}" checked="false"/><label>${role.name}</label>
-			</g:each>
-		</fieldset>
-		<input type="submit" value="add"/>
-	</g:form>
-		
-</div>
-<br/><br/>
-
-<g:form controller="tour" action="generateTours">
-	<input type="submit" value="Generate Tours"/>
-</g:form>
-
 </body>
 </html>

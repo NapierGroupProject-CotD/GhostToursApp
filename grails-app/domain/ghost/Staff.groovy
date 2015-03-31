@@ -6,6 +6,7 @@ class Staff {
 	String email
 	String username
 	String password
+	boolean isActive
 
 	static hasMany =[availableDays : AvailableDay, 
 				    datesUnavailable : DateUnavailable, 

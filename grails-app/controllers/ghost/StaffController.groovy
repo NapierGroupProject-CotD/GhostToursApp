@@ -44,7 +44,7 @@ class StaffController {
 			def username = params.username  //reminder: params is a map passed by the form. username and password are the keys, given by the name attributes in the <input> tags.   
 			def password = params.password  //          the values are whatever was entered in the text fields.
 		
-			if(Staff.findByUsername(username) != null){
+			if(Staff.findByUsername(username) != null &&Staff.findByUsername(username).isActive){
 		   
 				def correctHash = Staff.findByUsername(username).password
 				if(hashingService.validatePassword(password, correctHash)){
@@ -133,9 +133,14 @@ class StaffController {
 	}//end changeView */
 	
 	def managerDashboard(){
+		def activeStaffList = Staff.findAllByIsActive(true)                  
+		def mapOfRoles = staffService.mapOfRoles()  //service method call
+
+		
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
 		ArrayList<String> listOfRoles = loggedInStaff.roles()
-		[staffName:loggedInStaff.name, listOfRoles:listOfRoles]
+		
+		[activeStaffList:activeStaffList, mapOfRoles:mapOfRoles, listOfRoles:listOfRoles]
 	}
 	
 	def guideDashboard(){
@@ -215,8 +220,8 @@ class StaffController {
 		[staffName:loggedInStaff.name, futureToursList:futureToursList, listOfRoles:listOfRoles]
 
 	}
-	
-	def manageStaff() {
+	/*
+	def () {
 		def staffList = Staff.list()                  // Domain.list() is equivalent to SELECT * FROM table
 		def mapOfRoles = staffService.mapOfRoles()  //service method call
 
@@ -224,8 +229,8 @@ class StaffController {
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
 		ArrayList<String> listOfRoles = loggedInStaff.roles()
 		
-		[staffList:staffList, mapOfRoles:mapOfRoles, listOfRoles:listOfRoles]  // these are passed to manageStaff.gsp
-	}
+		[staffList:staffList, mapOfRoles:mapOfRoles, listOfRoles:listOfRoles]  // these are passed to .gsp
+	} */
 	
 	def viewStaff() {
 		println 'getting view for staff no. '+params.staffId
@@ -255,6 +260,7 @@ class StaffController {
 		if(unique){
 			Staff newStaff = new Staff(params)
 			newStaff.password = hashingService.createHash(params.password)
+			newStaff.isActive = true
 			newStaff.save(flush:true, failOnError:true)
 			
 			def role = params.role
@@ -269,7 +275,7 @@ class StaffController {
 			flash.errorMessage = errorMessage
 		}
 		
-		redirect(action:"manageStaff")		
+		redirect(action:"managerDashboard")		
 	}
 	
 	def deleteStaff(){
@@ -278,7 +284,7 @@ class StaffController {
 		
 		staff.delete(flush:true, failOnError:true)
 		
-		redirect(action:"manageStaff")
+		redirect(action:"managerDashboard")
 	}
 	
 	def updateStaff(){
@@ -287,7 +293,7 @@ class StaffController {
 		staff.properties = params
 		staff.save(flush:true, failOnError:true)
 		
-		redirect(action:"manageStaff")
+		redirect(action:"managerDashboard")
 	}
 	
 	def removeRole() {
@@ -297,7 +303,7 @@ class StaffController {
 		StaffRole.unlink(staffMember, roleToRemove)
 		
 		staffMember.save(flush:true, failOnError:true)
-		redirect(action:"manageStaff")
+		redirect(action:"managerDashboard")
 	}
 	
 	def addRole() {
@@ -312,13 +318,33 @@ class StaffController {
 		}
 		
 		if(hasAlready){
-			redirect(action:"manageStaff")
+			redirect(action:"managerDashboard")
 		} else {
 			StaffRole.link(staffMember, newRole)
 			staffMember.save(flush:true, failOnError:true)
-			redirect(action:"manageStaff")
+			redirect(action:"managerDashboard")
 		}
 		
+	}
+	
+	def toggleStaffStatus(){
+		def staff = Staff.get(params.staffId)
+		if(staff.isActive){
+			staff.isActive = false
+		} else {
+			staff.isActive = true
+		}
+		staff.save(flush:true)
+		redirect(action:"managerDashboard")
+	}
+	
+	def viewInactiveStaff(){
+		def inactiveStaffList = Staff.findAllByIsActive(false)
+		def mapOfRoles = staffService.mapOfRoles()  //service method call
+		Staff loggedInStaff = session.getAttribute("loggedInStaff")
+		ArrayList<String> listOfRoles = loggedInStaff.roles()
+				
+		[inactiveStaffList:inactiveStaffList, mapOfRoles:mapOfRoles, listOfRoles:listOfRoles]
 	}
 	
 }
