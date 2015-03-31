@@ -3,15 +3,17 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Tour implements Comparable<Tour> {
+	private int _id;
 	private LocalDate _date;
 	private LocalTime _time;
 	private String _type;
 
 	// Constructor
-	public Tour(LocalDate _date, LocalTime _time, String _type) {
+	public Tour(LocalDate _date, LocalTime _time, String _type, int _id) {
 		set_date(_date);
 		set_time(_time);
 		set_type(_type);
+		set_id(_id);
 	}
 
 	// toString().
@@ -62,12 +64,17 @@ public class Tour implements Comparable<Tour> {
 	public String get_type() {
 		return _type;
 	}
+	public int get_id() {
+		return _id;
+	}
 	
 	/* Setters */
+	public void set_id(int _id) {
+		this._id = _id;
+	}
 	public void set_date(LocalDate _date) {
 		this._date = _date;
 	}
-
 	public void set_time(LocalTime _time) {
 		this._time = _time;
 	}

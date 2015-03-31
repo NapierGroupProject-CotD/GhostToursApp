@@ -2,6 +2,9 @@ package genetics;
 import java.util.Map.Entry; import java.util.ArrayList;
 import java.util.Set; import java.util.TreeMap;
 
+import dataObjects.Guide;
+import dataObjects.Tour;
+
 public abstract class Genome implements Evolvable, Comparable<Genome> {
 	public final double MUTATIONRATE = 0.01;
 	public final double GENESWAPLIKELIHOOD 	= 	0.5		;
@@ -15,6 +18,11 @@ public abstract class Genome implements Evolvable, Comparable<Genome> {
 			String outputLine = key.toString() + " : " +  val.toString();
 			output.add(outputLine);
 		} 	return output;
+	}
+
+	@Override
+	public TreeMap<Tour, Guide> getAll() {
+		return null;
 	}
 	
 	/* toString */

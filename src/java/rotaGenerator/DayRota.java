@@ -1,7 +1,8 @@
 package rotaGenerator;
 import genetics.Genome;import genetics.Population;
 
-import java.time.LocalDate; import java.util.ArrayList; import java.util.Map.Entry;
+import java.time.LocalDate; import java.util.ArrayList; import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import dataObjects.Tour;	import dataObjects.Tours;
 import dataObjects.Guide; 	import dataObjects.Guides;
@@ -9,6 +10,17 @@ import dataObjects.Guide; 	import dataObjects.Guides;
 public class DayRota extends Genome {
 	private final int POPULATIONLIMIT = 20;
 	private LocalDate date;
+	
+	public TreeMap<Tour, Guide> getAll(){
+		TreeMap<Tour, Guide> forWriting = new TreeMap<Tour, Guide>();
+		for (Entry<Object, Object> entry : getGenome().entrySet()){
+			Tour tour = (Tour) entry.getKey();
+			Guide guide = (Guide) entry.getValue();
+			forWriting.put(tour, guide);
+		}
+		return forWriting;
+	}
+	
 	
 	public DayRota() { /* Blank Day Constructor */ }
 	public DayRota(LocalDate aDate){
