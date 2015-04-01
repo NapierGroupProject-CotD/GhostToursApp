@@ -9,10 +9,13 @@
 <body>
 
 <g:if test="${session.getAttribute("isGuide")}">
-	<g:link controller="dateUnavailable" action="showDatesUnavailable">Update Availability</g:link>
+	<g:link controller="dateUnavailable" action="showDatesUnavailable">Update Availability</g:link><br/>
 </g:if>
 
 <div id="timetableBox">
+<g:link action="decrementRotaMonth">Previous Month</g:link>
+<g:link action="resetRotaMonth">Current Month</g:link>
+<g:link action="incrementRotaMonth">Next Month</g:link>
 <g:if test="${!session.getAttribute("isManager")}">
 	<table>
 		<tr>
@@ -66,7 +69,14 @@
 		</g:each>
 	</table>
 </g:else>
-</div><br/><br/>
+<g:link action="decrementRotaMonth">Previous Month</g:link>
+<g:link action="resetRotaMonth">Current Month</g:link>
+<g:link action="incrementRotaMonth">Next Month</g:link>
+
+</div><br/>
+<g:form controller="tour" action="generateTours">
+	<input type="submit" value="Generate Tours"/>
+</g:form>
 
 </body>
 </html>

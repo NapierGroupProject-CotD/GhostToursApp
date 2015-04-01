@@ -87,10 +87,5 @@
 		
 </div>
 <br/><br/>
-
-<g:form controller="tour" action="generateTours">
-	<input type="submit" value="Generate Tours"/>
-</g:form>
-
 </body>
 </html>

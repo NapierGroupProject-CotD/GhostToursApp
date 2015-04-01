@@ -23,17 +23,25 @@ class StaffController {
 	}
 	
 	def changePassword(){
+		if(!session.getAttribute("loggedInStaff")){
+			redirect(controller:"staff", action:"logout")
+		}
+		
 		def staff = session.getAttribute("loggedInStaff")
 	}
 	def savePassword(){
-		if(params.password != params.repeatPassword){
-			flash.errorMessage = "Repeated password does not match!"
-			redirect(action:"changePassword")
+		if(!session.getAttribute("loggedInStaff")){
+			redirect(controller:"staff", action:"logout")
 		} else {
-			Staff staff = session.getAttribute("loggedInStaff")
-			staff.password = hashingService.createHash(params.password)
-			staff.save(flush:true)	
-			redirect(action:"logout")
+			if(params.password != params.repeatPassword){
+				flash.errorMessage = "Repeated password does not match!"
+				redirect(action:"changePassword")
+			} else {
+				Staff staff = session.getAttribute("loggedInStaff")
+				staff.password = hashingService.createHash(params.password)
+				staff.save(flush:true)	
+				redirect(action:"logout")
+			}
 		}
 	}
 	
@@ -113,26 +121,11 @@ class StaffController {
 			
 	}// end chooseView
 	
-	/*
-	def changeView(){
-		def roleId = params.role
-		def chosenRole = Role.get(roleId.toInteger()).name
-		
-		if(chosenRole.equals("Manager")){    
-			redirect(action:"managerDashboard")       
-		} else {
-			if(chosenRole.equals("Guide")){
-				redirect(action:"guideDashboard")
-			} else {
-				if(chosenRole.equals("Booker")){
-								redirect(action:"bookerDashboard")
-							}
-			}
-		} // end if else
-		
-	}//end changeView */
-	
 	def managerDashboard(){
+		if(!session.getAttribute("loggedInStaff") || !session.getAttribute("isManager")){
+			redirect(controller:"staff", action:"logout")
+		}
+		
 		def activeStaffList = Staff.findAllByIsActive(true)                  
 		def mapOfRoles = staffService.mapOfRoles()  //service method call
 
@@ -144,25 +137,34 @@ class StaffController {
 	}
 	
 	def guideDashboard(){
+		if(!session.getAttribute("loggedInStaff") || (!session.getAttribute("isGuide") && !session.getAttribute("isManager"))){
+			redirect(controller:"staff", action:"logout")
+		} else {
+		def startOfMonth = Calendar.instance
+		def endOfMonth = Calendar.instance
 		
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
-		session.setAttribute("isManager", false)
 		def availableGuideMap
 		
 		loggedInStaff.roles().each{ role ->
 			if(role.name.equals("Manager")){
-				session.setAttribute("isManager", true)
 				availableGuideMap = staffService.getAvailableGuideMap()
 			}
 		}
 		
-		def startOfMonth = Calendar.instance
+		if(session.getAttribute("startOfMonth")){
+			startOfMonth=session.getAttribute("startOfMonth")
+			endOfMonth = startOfMonth.clone()
+		} else {
+			session.setAttribute("startOfMonth", startOfMonth)
+		}
+		
 		startOfMonth.set(Calendar.DATE, 1)
 		startOfMonth.clearTime()
 		
-		def endOfMonth = Calendar.instance
 		endOfMonth.add(Calendar.MONTH, 1)
 		endOfMonth.set(Calendar.DATE, 1)
+		
 		endOfMonth.clearTime()
 		
 		
@@ -171,7 +173,7 @@ class StaffController {
 		def tours = Tour.findAllByDatetimeBetween(startOfMonth.getTime(), endOfMonth.getTime())
 		HashMap<Date, ArrayList<Tour>> tourMap = new HashMap<Date, ArrayList<Tour>>()
 		Calendar tourCal
-		
+		endOfMonth.add(Calendar.DATE, -1)
 		startOfMonth.upto(endOfMonth) {
 			
 			tours.each{ tour->
@@ -188,12 +190,50 @@ class StaffController {
 			dateList.add(it.clone())
 		}
 		
+		
 		ArrayList<String> listOfRoles = loggedInStaff.roles()	
 		[loggedInStaff:loggedInStaff, dateList:dateList, tourMap:tourMap, tours:tours, listOfRoles:listOfRoles, availableGuideMap:availableGuideMap]
-
+		}
 	}
 	
+	def incrementRotaMonth(){
+		if(!session.getAttribute("loggedInStaff") || (!session.getAttribute("isGuide") && !session.getAttribute("isManager"))){
+			redirect(controller:"staff", action:"logout")
+		} else {
+			def startOfMonth = session.getAttribute("startOfMonth")
+			startOfMonth.add(Calendar.MONTH, 1)
+			session.setAttribute("startOfMonth", startOfMonth)
+			redirect(action:"guideDashboard")
+		}
+	}
+	def decrementRotaMonth(){
+		if(!session.getAttribute("loggedInStaff") || (!session.getAttribute("isGuide") && !session.getAttribute("isManager"))){
+			redirect(controller:"staff", action:"logout")
+		} else {
+			def startOfMonth = session.getAttribute("startOfMonth")
+			startOfMonth.add(Calendar.MONTH, -1)
+			session.setAttribute("startOfMonth", startOfMonth)
+			redirect(action:"guideDashboard")
+		}
+	}
+	
+	def resetRotaMonth(){
+		if(!session.getAttribute("loggedInStaff") || (!session.getAttribute("isGuide") && !session.getAttribute("isManager"))){
+			redirect(controller:"staff", action:"logout")
+		} else {
+			def startOfMonth = Calendar.instance
+			session.setAttribute("startOfMonth", startOfMonth)
+			redirect(action:"guideDashboard")
+		}
+		
+	}
+	
+	
 	def bookerDashboard(){
+		if(!session.getAttribute("loggedInStaff") || (!session.getAttribute("isBooker") && !session.getAttribute("isManager"))){
+			redirect(controller:"staff", action:"logout")
+		} else {
+		
 		Staff loggedInStaff = session.getAttribute("loggedInStaff")
 		def selectedDate
 		if(session.getAttribute("selectedDate") == null){
@@ -218,6 +258,8 @@ class StaffController {
 		ArrayList<String> listOfRoles = loggedInStaff.roles()
 		
 		[staffName:loggedInStaff.name, futureToursList:futureToursList, listOfRoles:listOfRoles]
+		
+		}
 
 	}
 	/*
@@ -233,12 +275,19 @@ class StaffController {
 	} */
 	
 	def viewStaff() {
-		println 'getting view for staff no. '+params.staffId
+		if(!session.getAttribute("loggedInStaff") || !session.getAttribute("isManager")){
+			redirect(controller:"staff", action:"logout")
+		}
+		
 		def staffMember = Staff.get(params.staffId)
 		[staffMember:staffMember]
 	}
 	
 	def saveStaff(){
+		if(!session.getAttribute("loggedInStaff") || !session.getAttribute("isManager")){
+			redirect(controller:"staff", action:"logout")
+		} else {
+		
 		boolean unique = true
 		String errorMessage = null
 		Staff.list().each{ 
@@ -275,38 +324,55 @@ class StaffController {
 			flash.errorMessage = errorMessage
 		}
 		
-		redirect(action:"managerDashboard")		
+		redirect(action:"managerDashboard")	
+		}	
 	}
 	
 	def deleteStaff(){
-		def staff= Staff.get(params.staffId.toInteger())
+		if(!session.getAttribute("loggedInStaff") || !session.getAttribute("isManager")){
+			redirect(controller:"staff", action:"logout")
+		} else {
 		
+			def staff= Staff.get(params.staffId.toInteger())
+			staff.delete(flush:true, failOnError:true)
 		
-		staff.delete(flush:true, failOnError:true)
-		
-		redirect(action:"managerDashboard")
+			redirect(action:"managerDashboard")
+		}
 	}
 	
 	def updateStaff(){
-		println 'start update'
-		Staff staff = Staff.get(params.staffId)
-		staff.properties = params
-		staff.save(flush:true, failOnError:true)
+		if(!session.getAttribute("loggedInStaff") || !session.getAttribute("isManager")){
+			redirect(controller:"staff", action:"logout")
+		} else {
+			println 'start update'
+			Staff staff = Staff.get(params.staffId)
+			staff.properties = params
+			staff.save(flush:true, failOnError:true)
 		
-		redirect(action:"managerDashboard")
+			redirect(action:"managerDashboard")
+		}
 	}
 	
 	def removeRole() {
-		Staff staffMember = Staff.get(params.staffId)
-		Role roleToRemove = Role.get(params.roleId)
+		if(!session.getAttribute("loggedInStaff") || !session.getAttribute("isManager")){
+			redirect(controller:"staff", action:"logout")
+		} else {
 		
-		StaffRole.unlink(staffMember, roleToRemove)
+			Staff staffMember = Staff.get(params.staffId)
+			Role roleToRemove = Role.get(params.roleId)
 		
-		staffMember.save(flush:true, failOnError:true)
-		redirect(action:"managerDashboard")
+			StaffRole.unlink(staffMember, roleToRemove)
+		
+			staffMember.save(flush:true, failOnError:true)
+			redirect(action:"managerDashboard")
+		}
 	}
 	
 	def addRole() {
+		if(!session.getAttribute("loggedInStaff") || !session.getAttribute("isManager")){
+			redirect(controller:"staff", action:"logout")
+		} else {
+		
 		boolean hasAlready = false
 		Staff staffMember = Staff.get(params.staffId)
 		Role newRole = Role.get(params.roleToAdd)
@@ -324,10 +390,15 @@ class StaffController {
 			staffMember.save(flush:true, failOnError:true)
 			redirect(action:"managerDashboard")
 		}
+		}
 		
 	}
 	
 	def toggleStaffStatus(){
+		if(!session.getAttribute("loggedInStaff") || !session.getAttribute("isManager")){
+			redirect(controller:"staff", action:"logout")
+		} else {
+		
 		def staff = Staff.get(params.staffId)
 		if(staff.isActive){
 			staff.isActive = false
@@ -336,15 +407,20 @@ class StaffController {
 		}
 		staff.save(flush:true)
 		redirect(action:"managerDashboard")
+		}
 	}
 	
 	def viewInactiveStaff(){
-		def inactiveStaffList = Staff.findAllByIsActive(false)
-		def mapOfRoles = staffService.mapOfRoles()  //service method call
-		Staff loggedInStaff = session.getAttribute("loggedInStaff")
-		ArrayList<String> listOfRoles = loggedInStaff.roles()
+		if(!session.getAttribute("loggedInStaff") || !session.getAttribute("isManager")){
+			redirect(controller:"staff", action:"logout")
+		} else {
+			def inactiveStaffList = Staff.findAllByIsActive(false)
+			def mapOfRoles = staffService.mapOfRoles()  //service method call
+			Staff loggedInStaff = session.getAttribute("loggedInStaff")
+			ArrayList<String> listOfRoles = loggedInStaff.roles()
 				
-		[inactiveStaffList:inactiveStaffList, mapOfRoles:mapOfRoles, listOfRoles:listOfRoles]
+			[inactiveStaffList:inactiveStaffList, mapOfRoles:mapOfRoles, listOfRoles:listOfRoles]
+		}
 	}
 	
 }

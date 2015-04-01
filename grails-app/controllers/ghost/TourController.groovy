@@ -11,6 +11,10 @@ class TourController {
 	
 	
 	def generateTours(){
+		if(!session.getAttribute("loggedInStaff") || !session.getAttribute("isManager")){
+			redirect(controller:"staff", action:"logout")
+		} else {
+		
 		def start = Calendar.instance
 		def end = Calendar.instance
 		def newTour
@@ -54,13 +58,20 @@ class TourController {
 			schedulingService.createTour(tempDate, "Double Dead")
 			
 		}// end upto loop
+		
+		redirect(controller:"staff", action:"guideDashboard")
+		}//end session validation
 	}//end generateTours
 	
 	
 	def setTourStaff(){
-		def tour = Tour.get(params.tourId)
-		tour.staff = Staff.get(params.staff)
-		tour.save(flush:true)
-		redirect(controller:"staff", action:"guideDashboard")
+		if(!session.getAttribute("loggedInStaff") || !session.getAttribute("isManager")){
+			redirect(controller:"staff", action:"logout")
+		} else {
+			def tour = Tour.get(params.tourId)
+			tour.staff = Staff.get(params.staff)
+			tour.save(flush:true)
+			redirect(controller:"staff", action:"guideDashboard")
+		}
 	}
 }
