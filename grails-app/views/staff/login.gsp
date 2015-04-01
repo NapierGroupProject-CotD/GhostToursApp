@@ -1,5 +1,3 @@
-<%@ page import="ghost.Role"%>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,10 +15,6 @@
 		<asset:javascript src="application.js"/>
 </head>
 <body>
-<nav>
-	<g:link controller="main" action="index">Back to index</g:link>
-</nav>
-
 <div id="loginFormBox" class="container">
 	<g:if test="${flash.message}">
 		<div style="display: block">${flash.message}</div>

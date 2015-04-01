@@ -1,3 +1,4 @@
+<%response.sendRedirect("main")%>
 <!DOCTYPE html>
 <html>
 	<head>

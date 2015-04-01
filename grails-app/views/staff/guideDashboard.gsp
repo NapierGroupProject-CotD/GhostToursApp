@@ -16,6 +16,7 @@
 <g:link action="decrementRotaMonth">Previous Month</g:link>
 <g:link action="resetRotaMonth">Current Month</g:link>
 <g:link action="incrementRotaMonth">Next Month</g:link>
+
 <g:if test="${!session.getAttribute("isManager")}">
 	<table>
 		<tr>
@@ -40,6 +41,34 @@
 	</table>
 </g:if>
 <g:else>
+
+	<g:if test="${flash.message}">
+		<label>${flash.message}</label>
+	</g:if>
+	<g:form controller="tour" action="generateTours">
+		<input type="text" id="inp1" name="startDate" required placeholder="Start date"/>
+				<script>
+					// Attach a datepicker to the above input element
+					datePickerController.createDatePicker({
+						formElements : {
+							"inp1" : "%d/%m/%Y"
+						}
+						
+					});
+				</script>
+		<input type="text" id="inp2" name="endDate" required placeholder="End date"/>
+				<script>
+					// Attach a datepicker to the above input element
+					datePickerController.createDatePicker({
+						formElements : {
+							"inp2" : "%d/%m/%Y"
+						}
+						
+					});
+				</script>
+		<input type="submit" value="Generate Tours"/>
+	</g:form>
+	
 	<table>
 		<tr>
 			<th>Date</th><th>3.30 UG</th><th>7.30 DD</th><th>8pm UG</th><th>8.30 GY</th><th>9.30 DD</th>
@@ -74,9 +103,7 @@
 <g:link action="incrementRotaMonth">Next Month</g:link>
 
 </div><br/>
-<g:form controller="tour" action="generateTours">
-	<input type="submit" value="Generate Tours"/>
-</g:form>
+
 
 </body>
 </html>

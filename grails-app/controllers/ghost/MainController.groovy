@@ -2,5 +2,7 @@ package ghost
 
 class MainController {
 
-    def index() { }
+    def index() {
+		redirect(controller:"staff", action:"login")
+	}
 }
