@@ -19,7 +19,7 @@ import dataObjects.Guides;
 import dataObjects.Tour;
 import dataObjects.Tours;
 
-public class DbConnect {
+public class DBConnect {
 	private Connection connection = null;
 	private Statement statement = null;
 	private ResultSet resultSet = null;
@@ -56,7 +56,8 @@ public class DbConnect {
 			connection = DriverManager.getConnection(
 			"jdbc:mysql://localhost/ghost2?" + "user=admin&password=admin");
 			statement = connection.createStatement();
-			resultSet = statement.executeQuery("select * from ghost2.staff");
+			resultSet = statement.executeQuery("select * from ghost2.staff_role where role_id = 1");
+
 			getGuides(resultSet);
 
 		} catch (SQLException e) {
@@ -107,10 +108,15 @@ public class DbConnect {
 	private void getGuides(ResultSet resultSet) throws SQLException {
 		Guides guides = new Guides();
 		while (resultSet.next()) {
-			Guide guide = new Guide(resultSet.getString("name"),
-					getAvailability(resultSet.getInt("id")),
-					resultSet.getInt("id"));
-			guides.add(guide);
+			
+			Statement statementTwo = connection.createStatement();
+			ResultSet resultSetTwo = statementTwo.executeQuery("select * from ghost2.staff where id = " + resultSet.getInt("staff_id") + ";");
+			while (resultSetTwo.next()) {
+				Guide guide = new Guide(resultSetTwo.getString("name"),
+						getAvailability(resultSetTwo.getInt("id")),
+						resultSetTwo.getInt("id"));
+						guides.add(guide);
+			}
 		}
 	}
 
