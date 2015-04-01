@@ -2,11 +2,11 @@ package ghosttoursapp
 import java.time.LocalDate
 import dataObjects.Guides
 import rotaGenerator.GivenPeriodRota
-import db.DbConnect
+import db.DBConnect
 
 class GeneratorController {
 
-	DbConnect db = new DbConnect()
+	DBConnect db = new DBConnect()
 	Guides guides = new Guides()
 
     def optimise() { 
