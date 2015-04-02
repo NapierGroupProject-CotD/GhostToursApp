@@ -5,17 +5,29 @@ import java.text.SimpleDateFormat
 
 class DateUnavailableController {
 
+	final String MANAGER_MESSAGE = "Unavailable dates for "
     def index() { }
 	
 	def showDatesUnavailable(){
 		if(!session.getAttribute("loggedInStaff") || (!session.getAttribute("isGuide") && !session.getAttribute("isManager"))){
 			redirect(controller:"staff", action:"logout")
 		} else {
-		
+			def datesUnavailable
 			Staff loggedInStaff = session.getAttribute("loggedInStaff")
 			def now = new Date()
-			def datesUnavailable = DateUnavailable.findAllByStaffAndDateGreaterThan(loggedInStaff, now)
-		
+			if(!params.staffId && !session.getAttribute("staffId")){
+				datesUnavailable = DateUnavailable.findAllByStaffAndDateGreaterThan(loggedInStaff, now)
+			} else {
+				if(params.staffId){
+					session.setAttribute("staffId", params.staffId)
+				}
+				def staff = Staff.get(session.getAttribute("staffId"))
+				datesUnavailable = DateUnavailable.findAllByStaffAndDateGreaterThan(staff, now)
+				if(staff.id != loggedInStaff.id){
+					println "hereherehere"
+					flash.managerMessage = MANAGER_MESSAGE + staff.name
+				}
+			}
 			[datesUnavailable:datesUnavailable]
 		}
 	}
@@ -25,12 +37,15 @@ class DateUnavailableController {
 			redirect(controller:"staff", action:"logout")
 		} else {
 		
-			Staff loggedInStaff = session.getAttribute("loggedInStaff")
+			Staff staff = session.getAttribute("loggedInStaff")
+			if(session.getAttribute("staffId")){
+				staff = Staff.get(session.getAttribute("staffId"))
+			}
 			DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
 			try{
 				Date date= format.parse(params.date)
 				if(Tour.findByDatetimeGreaterThan(date)==null){
-					def dateUnavailable = new DateUnavailable(date:date, staff:loggedInStaff)
+					def dateUnavailable = new DateUnavailable(date:date, staff:staff)
 					dateUnavailable.save(flush:true, failOnError:true)
 					flash.message = "Date added."
 				} else {

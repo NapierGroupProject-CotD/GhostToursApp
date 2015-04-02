@@ -2,6 +2,8 @@
 <html>
 <head>
 	<meta name="layout" content="ghostview"/>
+	<asset:stylesheet src="datepicker.css"/>
+	<asset:javascript src="datepicker.js"/>
 </head>
 <body>
 
@@ -13,7 +15,7 @@
 				<label>${flash.message}</label><br/>
 			</g:if>
 			<h4>${futureToursList[0].datetime.format("EEEE")} - ${futureToursList[0].datetime.format("dd MMMM yyyy")}</h4>
-			<g:each in="${futureToursList}" var="tour" status="i">
+			<g:each in="${futureToursList.sort{it.datetime}}" var="tour" status="i">
 
 				<g:radio name="chosenTour" value="${tour.id}"/><label>${tour.datetime.format("HH:mm")} - ${tour.tourType.typeName} - ${tour.getRemainingPlaces()} places left!</label><br/>
 			</g:each>
@@ -31,7 +33,24 @@
 	<label>Previous Day</label>
 </g:else>
 
-<g:link controller="booking" action="nextDay">Next Day</g:link>
-
+<g:link controller="booking" action="nextDay">Next Day</g:link><br/>
+<div id="datePickerBox">
+	<g:if test="${flash.dateMessage}">
+		<label>${flash.dateMessage}</label>
+	</g:if>
+	<g:form controller="booking" action="pickDate">
+		<input type="text" id="inp1" name="date" />
+				<script>
+					// Attach a datepicker to the above input element
+					datePickerController.createDatePicker({
+						formElements : {
+							"inp1" : "%d/%m/%Y"
+						}
+						
+					});
+				</script>
+		<input type="submit" value="Confirm"/>
+	</g:form>
+</div>
 </body>
 </html>

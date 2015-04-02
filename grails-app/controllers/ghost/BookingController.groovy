@@ -1,5 +1,8 @@
 package ghost
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 class BookingController {
 	def bookingService
 
@@ -94,5 +97,39 @@ class BookingController {
 		
 			redirect(controller:"staff", action:"bookerDashboard")
 		}
+	}
+	def pickDate(){
+		if(!session.getAttribute("loggedInStaff")){
+			redirect(controller:"staff", action:"logout")
+		} else {
+			def selectedDate = Calendar.instance
+			def now = Calendar.instance
+			DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+			try{
+				Date date= format.parse(params.date)
+				selectedDate.setTime(date)
+				if(now.clearTime() == selectedDate.clearTime()){
+					return today()
+				} else {
+					if(now.clearTime() > selectedDate.clearTime()){
+						flash.dateMessage = "Error. Cannot select date in the past."
+						redirect(controller:"staff", action:"bookerDashboard")
+					} else {
+						selectedDate.set(Calendar.HOUR, 0)
+						session.setAttribute("today", false)
+						session.setAttribute("selectedDate", selectedDate)
+						redirect(controller:"staff", action:"bookerDashboard")
+					}
+				}
+		
+			} catch(java.text.ParseException e){
+				flash.dateMessage = "Error. Date format must be 'dd/mm/yyyy'. Alternatively, use the datepicker."
+				redirect(controller:"staff", action:"bookerDashboard")
+			}
+			
+			
+			
+		}
+		
 	}
 }

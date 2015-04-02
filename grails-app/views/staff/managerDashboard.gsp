@@ -51,6 +51,11 @@
 					</g:form>
 					</li>
 					<li>
+						<g:form controller="dateUnavailable" action="showDatesUnavailable">
+							<g:hiddenField name="staffId" value="${staffMember.id}"/>
+						<input type="submit" value="View availability" class="btn btn-lg btn-info btn-xs">
+					</g:form>
+					<li>
 					<g:form controller="staff" action="toggleStaffStatus">
 						<g:hiddenField name="staffId" value="${staffMember.id}"/>
 						<input type="submit" value="Set inactive" onclick="return confirm('Set staff status to inactive?')" class="btn btn-lg btn-info btn-xs">

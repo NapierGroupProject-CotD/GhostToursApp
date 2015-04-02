@@ -7,6 +7,10 @@
 <meta name="layout" content="ghostview"/>
 </head>
 <body>
+<g:if test="${flash.managerMessage}">
+	<h4>${flash.managerMessage}</h4>
+</g:if>
+
 <div id="datePickerBox">
 	<g:form action="saveDateUnavailable">
 		<input type="text" id="inp1" name="date" />
