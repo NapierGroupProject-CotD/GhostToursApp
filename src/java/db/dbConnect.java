@@ -56,7 +56,7 @@ public class DBConnect {
 			connection = DriverManager.getConnection(
 			"jdbc:mysql://localhost/ghost2?" + "user=root&password=23wexcsd");
 			statement = connection.createStatement();
-			resultSet = statement.executeQuery("select * from ghost2.staff_role where role_id = 1");
+			resultSet = statement.executeQuery("select * from ghost2.staff_role where role_id = 2");
 
 			getGuides(resultSet);
 
