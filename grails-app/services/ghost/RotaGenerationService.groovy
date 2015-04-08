@@ -22,6 +22,8 @@ class RotaGenerationService {
 		db.readDataBase()
 		
 		LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		//println "localdate: "+localDate
+		//println "days: "+days
 		GivenPeriodRota rota = new GivenPeriodRota(localDate, days)
 
 		rota.evolve()
