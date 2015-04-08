@@ -5,7 +5,11 @@ import java.text.SimpleDateFormat
 
 class BookingController {
 	def bookingService
-
+	
+	final String DATE_FORMAT_ERROR_MESSAGE = "Error. Date format must be 'dd/mm/yyyy'. Alternatively, use the datepicker."
+	final String PAST_DATE_ERROR_MESSAGE = 	"Error. Cannot select date in the past."
+	final String TOUR_NOT_SELECTED_ERROR_MESSAGE = "Please select tour!"
+	
     def index() { }
 	
 	def newBookingDetails(){
@@ -14,7 +18,7 @@ class BookingController {
 		} else {
 		
 			if(params.chosenTour == null) {
-				flash.message = "Please select tour!"
+				flash.message = TOUR_NOT_SELECTED_ERROR_MESSAGE
 				redirect(controller:"staff", action:"bookerDashboard")
 			} else {
 				def tour = Tour.get(params.chosenTour)
@@ -112,7 +116,7 @@ class BookingController {
 					return today()
 				} else {
 					if(now.clearTime() > selectedDate.clearTime()){
-						flash.dateMessage = "Error. Cannot select date in the past."
+						flash.dateMessage = PAST_DATE_ERROR_MESSAGE
 						redirect(controller:"staff", action:"bookerDashboard")
 					} else {
 						selectedDate.set(Calendar.HOUR, 0)
@@ -123,7 +127,7 @@ class BookingController {
 				}
 		
 			} catch(java.text.ParseException e){
-				flash.dateMessage = "Error. Date format must be 'dd/mm/yyyy'. Alternatively, use the datepicker."
+				flash.dateMessage = DATE_FORMAT_ERROR_MESSAGE
 				redirect(controller:"staff", action:"bookerDashboard")
 			}
 			

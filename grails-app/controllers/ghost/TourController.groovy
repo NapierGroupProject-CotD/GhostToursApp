@@ -7,6 +7,7 @@ import java.util.Calendar.*
 class TourController {
 
 	def schedulingService
+	def rotaGenerationService
 	
     def index() { }
 	
@@ -35,13 +36,15 @@ class TourController {
 				def start = Calendar.instance
 				def end = Calendar.instance
 				def newTour
-		
+				def days = 0
+				
 				start.setTime(startDate)
 				end.setTime(endDate)
 				end.add(Calendar.DATE, 1)
 		
 				start.upto(end) { tempDate ->
-			
+					days++
+					
 					tempDate.set(Calendar.HOUR, 3)
 					tempDate.set(Calendar.MINUTE, 30)
 					tempDate.set(Calendar.SECOND, 0)
@@ -73,7 +76,9 @@ class TourController {
 					schedulingService.createTour(tempDate, "Double Dead")
 			
 				}// end upto loop
-		
+				println "days:  "+days
+				rotaGenerationService.optimise(start, days)
+				
 				redirect(controller:"staff", action:"guideDashboard")
 			}
 		}//end session validation
