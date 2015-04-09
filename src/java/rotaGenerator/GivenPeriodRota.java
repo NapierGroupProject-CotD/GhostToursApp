@@ -12,14 +12,18 @@ public class GivenPeriodRota extends Genome{
 		
 		int dayCount = numberOfDays;
 
-		while ( dayCount > 7 ) {
-			LocalDate currentDate = periodBegins.plusDays(dayCount);
+		LocalDate currentDate = periodBegins/*.plusDays(dayCount)*/;
+
+		while ( dayCount >= 7 ) {
+		//	LocalDate currentDate = periodBegins/*.plusDays(dayCount)*/;
 			this.writeGene(currentDate, new WeekRota(currentDate));	
+			currentDate = currentDate.plusDays(7);
 			dayCount = dayCount - 7; // Days in a week.
 		}
-		while ( dayCount >= 0 ) {
-			LocalDate currentDate = periodBegins.plusDays(dayCount);
+		while ( dayCount > 0 ) {
+		//	LocalDate currentDate = periodBegins.plusDays(dayCount);
 			this.writeGene(currentDate, new DayRota(currentDate));	
+			currentDate = currentDate.plusDays(1);
 			dayCount--;
 		}	
 	}
